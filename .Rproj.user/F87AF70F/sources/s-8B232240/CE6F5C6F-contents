@@ -1,0 +1,21 @@
+---
+title: "PSYC234 (Weeks 15-19)"
+author: "Amy Atkinson"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+biblio-style: apalike
+link-citations: yes
+github-repo: amy-atkinson/PSYC234_Part2
+description: "This contains all of the important documents for Dr Amy Atkinson's part of PSYC234 (Lectures 5-9)"
+---
+
+# Introduction
+
+This is a collection of tuition material written for 2nd year Psychology undergraduates at Lancaster University (PSYC234, Weeks 15-19). It covers: the binomial test, non-parametric tests, binary logistic regression, and proportional odds models.
+
+It contains links to lecture materials, pre-lab activities, lab materials, and independent learning activities. It assumes that students are now able to use the RStudio server well. As such, there is little coverage of more basic concepts (e.g. how to uplaod data to the RStudio server). 
+
+
+

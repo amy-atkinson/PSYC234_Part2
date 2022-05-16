@@ -1,0 +1,6 @@
+"0","Group <- c(""4 cups"", ""4 cups"", ""4 cups"", ""0 cups"", ""0 cups"", ""0 cups"", ""0 cups"")"
+"0","Tasks_completed <- c(5, 18, 14, 6, 4, 17, 14)"
+"0","Rank <- c(2, 7, 4.5, 3, 1, 6, 4.5)"
+"0","tab3 <- data.frame(Group, Tasks_completed, Rank)"
+"0","kable(tab3, booktabs = TRUE, align=rep('c', 3)) %>%"
+"0","  kable_styling(position = ""center"")"

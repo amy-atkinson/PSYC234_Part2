@@ -1,0 +1,3 @@
+"0","Group <- c(""4 cups"", ""4 cups"", ""4 cups"", ""0 cups"", ""0 cups"", ""0 cups"", ""0 cups"")"
+"0","Tasks_completed <- c(5, 18, 14, 6, 4, 17, 14)"
+"0","tab1 <- data.frame(Group, Tasks_completed)"

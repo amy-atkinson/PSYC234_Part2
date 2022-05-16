@@ -1,0 +1,232 @@
+---
+title: "Week 16 - Model script"
+author: "Amy Atkinson" 
+date: "11/02/2022"
+output: html_document
+---
+
+## The Wilcoxon rank-sum test
+
+Background: You are a researcher interested in whether the old saying "an apple a day keeps the doctor away is true". You recruit 16 people and assign each participant to either a "0 apples" or "1 apple" condition. Participants in the "0 apple"" condition eat 0 apples every day for a year. Participants in the "1 apple" condition eat 1 apple a day for a year. You ask participants to report how many times they visited the GP in the year.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Load in the libraries you need here
+library(tidyverse) 
+library(cowplot)
+```
+
+### Read in the data
+
+```{r}
+apple_data <- read.csv("apple_study_data.csv")
+```
+
+### Check whether the data meets the assumption of normality
+
+#### 0 apples group:
+
+##### Filter data:
+
+This produces a new dataset containing data for the 0 apple a day group only:
+
+```{r}
+zero_apples <- apple_data %>% filter(Apples_per_day == "0 apples")  
+```
+
+##### Produce a Q-Q plot:
+
+```{r}
+qqnorm(zero_apples$Visits) # plots observed data
+qqline(zero_apples$Visits, col = "steelblue") # plots expected data if data follows a normal distribution
+```
+
+Some evidence of deviation. 
+
+##### Shapiro-Wilk test:
+
+
+```{r}
+shapiro.test(zero_apples$Visits)
+
+```
+
+This suggests that the data in the zero apples group violates the assumption of normality.
+
+#### 1 apple group:
+
+##### Filter data:
+
+This produces a new dataset containing data for the 1 apple a day group only:
+
+```{r}
+one_apple <- apple_data %>% filter(Apples_per_day == "1 apple")
+
+```
+
+##### Produce a Q-Q plot:
+
+
+```{r}
+qqnorm(one_apple$Visits) # qqnorm plots our data
+
+qqline(one_apple$Visits, col = "steelblue") # plots expected data if the data is from a normally distributed population.
+```
+
+The data in this group seems to follow the diagonal line quite well. 
+
+##### Shapiro-Wilk test:
+
+```{r}
+shapiro.test(one_apple$Visits)
+```
+
+The Shapiro-Wilk test suggests the assumption of normality is not violated for this group
+
+### Exploring our dataset:
+
+Medians, range, and number of participants per group:
+
+```{r}
+apple_data %>% # 
+  group_by(Apples_per_day) %>% # plots data per group
+  summarise(med = median(Visits), # median Visits value 
+            min = min(Visits), # lowest Visits value
+            max = max(Visits), # highest Visits value
+            n = n()) # number of participants per group
+```
+
+Plot:
+
+```{r}
+ggplot(apple_data, aes(x=Apples_per_day, y=Visits)) + 
+  geom_boxplot() + 
+  labs(y = "Number of visits to the GP") + 
+  theme_cowplot() 
+```
+
+The median for the 1 apple group is lower than the median for the 0 apple group. There are 8 participants in each group.
+
+### Performing the Wilcoxon rank-sum test:
+
+```{r}
+model1 <- wilcox.test(Visits ~ Apples_per_day, data = apple_data, paired = FALSE) 
+model1
+```
+
+There is a significant difference between the groups (p = .018).
+
+### Effect size: 
+
+```{r}
+z <- qnorm(model1$p.value/2)
+r <- z/sqrt(16) # earlier, we saw we have 8 participants in each Apples_per_day, so 16
+r
+
+```
+
+The effect size (r) is equal to -0.59. This is a large effect size.  
+
+
+### Interpretation:
+
+A Wilcoxon rank-sum test revealed that the participants who ate one apple a day (Median = 3.5; Range = 0-8) visited the GP less than participants who ate zero apples a day (Median = 9.5; Range = 2-41), W = 55, p = .018, r = -.59. 
+
+This study provides evidence that an apple a day  keep the doctor away.
+
+## The Wilcoxon signed-rank test
+
+You are interested in whether eating bananas keeps the doctor away. This time you recruit only one group of participants. In the first year, you ask them to eat 0 banana every day. In the second year, you ask them to eat 1 bananas a day. You ask them to report how many times they visit the GP in Year 1 and Year 2. 
+
+### Read in the data
+
+This chunk reads in the data.
+
+```{r}
+banana_data <- read.csv("banana_study_data.csv") 
+```
+
+### Check whether the data meets the assumption of normality
+
+```{r}
+banana_data$difference <- banana_data$zero_banana - banana_data$one_banana 
+```
+
+#### Produce the Q-Q plot:
+
+```{r}
+qqnorm(banana_data$difference) # qqnorm plots our data
+
+qqline(banana_data$difference, col = "steelblue") # plots expected data if the data is from a normally distributed population.
+```
+
+### Shapiro-Wilk test:
+
+A few of the points deviate from the line. This suggests the assumption of normality may be violated.
+
+```{r}
+shapiro.test(banana_data$difference)
+
+```
+
+The p-value is significant, this suggests the assumption of normality has been violated. 
+
+### Exploring the data:
+
+#### Descriptive statistics:
+
+```{r}
+banana_data %>%
+  summarise(med_0banana = median(zero_banana), min_0banana = min(zero_banana), max_0banana = max(zero_banana), # median, min and max for 0 banana timepoint,
+            med_1banana = median(one_banana), min_1banana = min(one_banana), max_1banana = max(one_banana), # median, min and max for 1 banana timepoint
+            n()) # number of participants
+```
+            
+#### Plot:
+
+```{r include =FALSE} 
+# WE NEED THE DATA TO BE IN LONG FORMAT TO PLOT THE FIGURE
+# set this to false if we don't want our html file to contain this chunk of code
+banana_data_long <- gather(banana_data, Bananas, Visits, zero_banana:one_banana)
+banana_data_long 
+
+banana_data_long$Bananas <- factor(banana_data_long$Bananas, c("zero_banana", "one_banana")) # this will mean zero bananas is presented first on the olot
+```
+
+```{r}
+ggplot(banana_data_long, aes(x=Bananas, y=Visits)) + 
+  geom_boxplot() +
+  labs(y = "Number of GP visits") +
+  scale_x_discrete(labels = c("Zero", "One")) + # changes "zero_banana" to "Zero" and "one_banana" to "One" - you could also recode the variable to do the same thing
+  theme_cowplot()
+```
+
+The median number of visits to the GP is lower in the zero banana condition than the one banana condition.
+
+### Performing the Wilcoxon signed-rank test:
+
+```{r}
+model2 <- wilcox.test(banana_data$zero_banana, banana_data$one_banana, paired = TRUE)
+model2
+```
+
+The p-value is equal to 0.03552 (or .036), indicating there is a significant difference between the conditions.
+
+### Effect size: 
+
+```{r} 
+z_bananas <- qnorm(model2$p.value/2)
+r_banana <- z_bananas/sqrt(12) # 12 because we have 12 observations overall (6 participants and 2 timepoints for each)
+r_banana
+```
+
+The effect size (r) is equal to -0.61, indicating there is a large effect size.
+
+### Interpretation:
+
+A Wilcoxon signed-rank test revealed that the number of visits to the GP was significantly lower in the 0 banana condition (Median = 5; Range = 1-22) than the 1 apple a day condition (Median = 28; Range = 3-65), V = 0, p = .036, r = -.61. 
+
+Given that participants who ate one banana a day visited the doctor more than participants who ate zero apples a day, this study provides evidence that eating a banana a day does not keep the doctor away 
+
+(Disclaimer: data is 100% made up, please don't stop eating bananas based on this...!)

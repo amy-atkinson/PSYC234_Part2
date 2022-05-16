@@ -1,0 +1,7 @@
+"0","Before_intervention <- c(23, 34, 67, 65, 21)"
+"0","After_intervention <- c(27, 34, 91, 67, 44)"
+"0","Difference <- c(-4, ""Exclude"", -24, -2, -23)"
+"0","tab4<- data.frame(Before_intervention, After_intervention, Difference)"
+"0","kable(tab4, booktabs = TRUE, align=rep('c', 3)) %>%"
+"0","  kable_styling(position = ""center"") %>%"
+"0","  column_spec(3, color = ""purple"")"

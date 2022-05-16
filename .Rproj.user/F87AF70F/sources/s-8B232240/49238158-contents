@@ -1,0 +1,221 @@
+# Lecture 9 (Extending binary logistic regression) {#extending-binary-regression}
+
+```{r , include=FALSE}
+library(car)
+library(DescTools) 
+library(tidyverse)
+library(MASS)
+library(brant)
+
+select <- dplyr::select
+```
+
+## Lecture
+
+This lecture extends the content taught in {#extending-binary-regression} to three new contexts: binary logistic regression with different types of predictors, multiple binary logistic regression, and proportional odds models.
+
+**Part 1: Binary logistic regression with different types of predictors**
+
+This part of the lecture covers binary logistic regression with one categorical predictor with three or more levels and binary logistic regression with one continuous predictor. The lecture recording is available [here](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=96652a3c-c8b7-4cd8-a742-ae5300dd67db) and the slides are available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785870). 
+
+**Part 2: Multiple binary logistic regression**
+
+Part 2 covers multiple binary logistic regression: binary logistic regression with multiple predictor variables (i.e. more than one predictor). The lecture recording is available [here](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=88f1bd46-b56b-473a-b567-ae5300dd685c) and the slides are available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785870). 
+
+**Part 3: Proportional odds models**
+
+Part 3 covers proportional odds models - a type of model that could be considered if the outcome is ordinal (has ordered levels). The lecture recording is available [here](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=c75610b6-8324-47f1-beb3-ae5300e153fa) and the slides are available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785870). 
+
+## Pre-lab work
+
+Before the lab, please watch the following [video](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=572ff060-5b75-4111-a016-ae54010306a1). This walks you through how to run a proportional odds model. Please also take a look at [this](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1805161) R Markdown file. This covers how to run a multiple binary logistic regression model and a proportional odds model
+
+## Lab
+
+In the lab, we'll run a multiple binary logistic regression model and a proportional odds model.  Please download the following zip file which contains two datasets: [measles_data.csv](files/Week_19/measles_data.csv) and [academic_data.csv](files/Week_19/academic_data.csv).
+
+Use one of the following templates to ensure the packages are loaded in correctly to avoid conflicts: [R Markdown](files/Week_19/Week_19_RMarkdown_template.Rmd) and [R](files/Week_19/Week_19_R_template.R).
+
+The datasets relate to the following research questions:
+
+**1. Academic dataset**
+
+You are interested in factors that predict academic achievement in mathematics. Children’s academic achievement can be rated as below expected, at expected or above expected. 
+
+The predictors you are interested in are:
+* Number if hours spent revising (continuous)
+* Likes school (Yes/no)
+* Favourite subject (Maths, English or Science)
+
+To make sure we should all end up with the same output:
+*Set the reference category for Likes school as “No”
+*Set the reference category for Favourite subject as “Maths”
+
+**2. Measles dataset**
+
+You work in a nursery. In the nursery, there has been an outbreak of measles. You are interested in factors that predict whether a child in your nursery will have measles (yes/no). 
+
+The predictors you are interested in are:
+* Number of hours spent at nursery weekly (continuous)
+* Has siblings(Yes/no)
+* Vaccinated against measles (Yes/no)
+
+For the categorical predictors:
+* Set the reference category for Siblings as “No”
+* Set the reference category for Vaccinated as “No”
+
+For the outcome (measles – yes/no):
+* Set No as 0, and Yes as 1
+
+### Model script
+
+Here is a [model script](files/Week_19/Week_19_Lab_Model_Script.Rmd) that produces the answers to the above research questions. I use the word 'model' loosely, as you may have used different functions you've learned over the last two years (and that's absolutely fine!). So don't worry if you haven't used the exact same functions as me. You should end up with the same results and interpretation at the end though.
+
+### Feedback on scripts
+
+Feedback on R scripts submitted by students is available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785872).
+
+## Independent learning
+
+This is optional, but recommended. The answers are found below.
+
+### Activity 1
+
+**Interpreting odds ratios from multiple binary logistic regression**
+
+Imagine you are interested in examining factors that predict whether an individual has a dog (yes/no). The variables you are interested in are: has children (yes/no), working pattern (full-time, part-time, unemployed), and number of pets previously (continuous). You code dog into a numeric variable where 0 = No and 1 = Yes. You set “No” as the reference category for “has children” and “unemployed” as the reference category for working pattern. Below are the odds ratios and 95% confidence intervals around the odds ratio that you obtain.
+
+```{r echo=FALSE}
+variable_name <- c("Has_childrenYes", "Working_patternFull-time", "Working_patternPart-time", "Num_previous_pets")
+odds_ratio <- c(3.67, 6.85, 3.12, 0.45)
+lower_ci <- c(2.14, 1.34, 0.67, 0.23)
+upper_ci <- c(5.64, 14.67, 1.35, 0.67)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpert the odds ratios?**
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+### Activity 2
+
+**Interpreting odds ratios from a proportional odds model**
+
+Imagine you are interested in examining factors that predict severity of a disease (mild, moderate or severe). The variables you are interested in are: pre-existing health condition (yes/no), smokes (yes/no), and number of units of alcohol consumed weekly (continuous). You code disease severity into an ordered factor (mild < moderate < severe). You set “No” as the reference category for “pre-existing health condition” and “smoking”. Below are the odds ratios and confidence intervals you obtain.
+
+```{r echo=FALSE}
+variable_name <- c("Pre-existing_healthYes", "SmokesYes", "Num_alcohol_units")
+odds_ratio <- c(2.31, 1.45, 1.12)
+lower_ci <- c(1.45, 0.89, 1.02)
+upper_ci <- c(4.56, 4.56, 1.45)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpret the odds ratios?**
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+### Activity 1: Answers
+
+```{r echo=FALSE}
+variable_name <- c("Has_childrenYes", "Working_patternFull-time", "Working_patternPart-time", "Num_previous_pets")
+odds_ratio <- c(3.67, 6.85, 3.12, 0.45)
+lower_ci <- c(2.14, 1.34, 0.67, 0.23)
+upper_ci <- c(5.64, 14.67, 1.35, 0.67)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpret the odds ratios?**
+
+You could interpret the odds ratios in two ways:
+
+**Way one:**
+
+<span style="color:purple">Individuals who had children had higher odds of having a dog relative to individuals who did not have children (odds ratio = 3.67, 95% confidence interval = 2.14-5.64) when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked full time had had higher odds of having a dog relative to individuals who were unemployed (odds ratio = 6.85, 95% confidence interval = 1.34-14.67) when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked part-time had higher odds of having a dog relative to individuals who were unemployed (odds ratio = 3.12, 95% confidence interval = 0.67-1.35) when holding other variables constant</span>
+
+<span style="color:purple">A one unit increase in the number of previous pets was associated with lower odds of currently having a dog (odds ratio = 0.45, 95% confidence interval = 0.23-0.67) when holding other variables constant</span>
+
+**Way two:**
+
+<span style="color:purple">Individuals who had children had 3.67x higher odds of having a dog relative to individuals who did not have children (95% confidence interval = 2.14-5.64), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked full time had had 6.85x higher odds of having a dog relative to individuals who were unemployed (95% confidence interval = 1.34-14.67), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked part-time had 3.12x higher odds of having a dog relative to individuals who were unemployed (95% confidence interval = 0.67-1.35)</span>
+
+<span style="color:purple">A one unit increase in the number of previous pets was associated with a 0.45x higher odds (i.e. lower odds) of having a dog (odds ratio = 0.45, 95% confidence interval = 0.23-0.67), when holding other variables constant</span>
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+<span style="color:purple">*	Has_childrenYes</span>
+
+<span style="color:purple">*	Working_patternFull-time</span>
+
+<span style="color:purple">*	Num_previous_pets</span>
+
+<span style="color:purple">The 95% confidence interval around the odds ratio does not cross 1 for these comparisons (i.e. both the upper and the lower bound are higher than 1 OR both the upper and the lower bound are lower than 1). For Working_patternPart-time, the 95% confidence interval crosses 1 (i.e. the lower confidence interval bound is below 1 and the higher confidence interval bound is above 1). This means when we look at the output, the p-value for Working_patternPart-time will be above 0.05 (i.e. not significant).</span>
+
+### Activity 2: Answers
+
+```{r echo=FALSE}
+variable_name <- c("Pre-existing_healthYes", "SmokesYes", "Num_alcohol_units")
+odds_ratio <- c(2.31, 1.45, 1.12)
+lower_ci <- c(1.45, 0.89, 1.02)
+upper_ci <- c(4.56, 4.56, 1.45)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpret the odds ratios?**
+
+You can interpret the odds ratios in two ways:
+
+**Way one:**
+
+<span style="color:purple">Individuals who had a pre-existing health condition had higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not have a pre-existing health condition (odds ratio = 2.31, 95% confidence interval = 1.45-4.56), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who smoked had higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not smoke (odds ratio = 1.45, 95% confidence interval = 0.89-4.56) when holding other variables constant</span>
+
+<span style="color:purple">A one unit increase in the number of alcohol units consumed weekly increased the odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease), when holding the other variables constant (odds ratio = 1.12, 95% confidence interval = 1.02-1.45)</span>
+
+**Way two:**
+
+<span style="color:purple">Individuals who had a pre-existing health condition had 2.31x higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not have a pre-existing health condition (95% confidence interval = 1.45-4.56), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who smoked had 1.45x higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not smoke (95% confidence interval = 0.89-4.56) when holding other variables constant</span>
+
+<span style="color:purple">A one unit increase in the number of alcohol units consumed weekly increased the odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) by 1.12, when holding the other variables constant (95% confidence interval = 1.02-1.45)</span>
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+<span style="color:purple">*	Pre-existing_healthYes </span>
+<span style="color:purple">*	Num_alcohol_units</span>
+
+<span style="color:purple">The 95% confidence interval around the odds ratio does not cross 1 for these comparisons (i.e. both the upper and the lower bound are higher than 1 OR both the upper and the lower bound are lower than 1). For SmokesYes, the 95% confidence interval crosses 1 (i.e. the lower confidence interval bound is below 1 and the higher confidence interval bound is above 1). This means when we look at the output, the p-value for SmokesYes will be above 0.05 (i.e. not significant).</span>

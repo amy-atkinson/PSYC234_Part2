@@ -1,0 +1,4 @@
+"0","contrasts(academic_data$Likes_school)"
+"2","Error in contrasts(academic_data$Likes_school) : 
+  contrasts apply only to factors
+"

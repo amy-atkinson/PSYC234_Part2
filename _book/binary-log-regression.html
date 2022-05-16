@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Lecture 8 (Binary logistic regression) | PSYC234 (Weeks 15-19)</title>
+  <meta name="description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Lecture 8 (Binary logistic regression) | PSYC234 (Weeks 15-19)" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  <meta name="github-repo" content="amy-atkinson/PSYC234_Part2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Lecture 8 (Binary logistic regression) | PSYC234 (Weeks 15-19)" />
+  
+  <meta name="twitter:description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  
+
+<meta name="author" content="Amy Atkinson" />
+
+
+<meta name="date" content="2022-05-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="kruskal-friedman.html"/>
+<link rel="next" href="extending-binary-regression.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="binomial_test.html"><a href="binomial_test.html"><i class="fa fa-check"></i><b>2</b> Lecture 5 (Binomial Test)</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="binomial_test.html"><a href="binomial_test.html#lecture"><i class="fa fa-check"></i><b>2.1</b> Lecture</a></li>
+<li class="chapter" data-level="2.2" data-path="binomial_test.html"><a href="binomial_test.html#pre-lab-work"><i class="fa fa-check"></i><b>2.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="2.3" data-path="binomial_test.html"><a href="binomial_test.html#lab"><i class="fa fa-check"></i><b>2.3</b> Lab</a></li>
+<li class="chapter" data-level="2.4" data-path="binomial_test.html"><a href="binomial_test.html#independent-learning"><i class="fa fa-check"></i><b>2.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="binomial_test.html"><a href="binomial_test.html#activity-1"><i class="fa fa-check"></i><b>2.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="2.4.2" data-path="binomial_test.html"><a href="binomial_test.html#activity-2"><i class="fa fa-check"></i><b>2.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="2.4.3" data-path="binomial_test.html"><a href="binomial_test.html#activity-1-answers"><i class="fa fa-check"></i><b>2.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="2.4.4" data-path="binomial_test.html"><a href="binomial_test.html#activity-2-answers"><i class="fa fa-check"></i><b>2.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html"><i class="fa fa-check"></i><b>3</b> Lecture 6 (Non-parametric tests: Wilcoxon rank-sum and Wilcoxon signed-rank tests)</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#lecture-1"><i class="fa fa-check"></i><b>3.1</b> Lecture</a></li>
+<li class="chapter" data-level="3.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#pre-lab-work-1"><i class="fa fa-check"></i><b>3.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="3.3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#lab-1"><i class="fa fa-check"></i><b>3.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#model-script"><i class="fa fa-check"></i><b>3.3.1</b> Model script</a></li>
+<li class="chapter" data-level="3.3.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#feedback-on-scripts"><i class="fa fa-check"></i><b>3.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#independent-learning-1"><i class="fa fa-check"></i><b>3.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-1-1"><i class="fa fa-check"></i><b>3.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="3.4.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-2-1"><i class="fa fa-check"></i><b>3.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="3.4.3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-1-answers-1"><i class="fa fa-check"></i><b>3.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="3.4.4" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-2-answers-1"><i class="fa fa-check"></i><b>3.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html"><i class="fa fa-check"></i><b>4</b> Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman’s ANOVA)</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#lecture-2"><i class="fa fa-check"></i><b>4.1</b> Lecture</a></li>
+<li class="chapter" data-level="4.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#pre-lab-work-2"><i class="fa fa-check"></i><b>4.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="4.3" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#lab-2"><i class="fa fa-check"></i><b>4.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#model-script-1"><i class="fa fa-check"></i><b>4.3.1</b> Model script</a></li>
+<li class="chapter" data-level="4.3.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#feedback-on-scripts-1"><i class="fa fa-check"></i><b>4.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#independent-learning-2"><i class="fa fa-check"></i><b>4.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-1-2"><i class="fa fa-check"></i><b>4.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="4.4.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-2-2"><i class="fa fa-check"></i><b>4.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="4.4.3" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-1-answers-2"><i class="fa fa-check"></i><b>4.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="4.4.4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-2-answers-2"><i class="fa fa-check"></i><b>4.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="binary-log-regression.html"><a href="binary-log-regression.html"><i class="fa fa-check"></i><b>5</b> Lecture 8 (Binary logistic regression)</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#lecture-3"><i class="fa fa-check"></i><b>5.1</b> Lecture</a></li>
+<li class="chapter" data-level="5.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#pre-lab-work-3"><i class="fa fa-check"></i><b>5.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="5.3" data-path="binary-log-regression.html"><a href="binary-log-regression.html#lab-3"><i class="fa fa-check"></i><b>5.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#model-script-2"><i class="fa fa-check"></i><b>5.3.1</b> Model script</a></li>
+<li class="chapter" data-level="5.3.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#feedback-on-scripts-2"><i class="fa fa-check"></i><b>5.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="binary-log-regression.html"><a href="binary-log-regression.html#independent-learning-3"><i class="fa fa-check"></i><b>5.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-1-3"><i class="fa fa-check"></i><b>5.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="5.4.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-2-3"><i class="fa fa-check"></i><b>5.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="5.4.3" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-1-answers-3"><i class="fa fa-check"></i><b>5.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="5.4.4" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-2-answers-3"><i class="fa fa-check"></i><b>5.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html"><i class="fa fa-check"></i><b>6</b> Lecture 9 (Extending binary logistic regression)</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#lecture-4"><i class="fa fa-check"></i><b>6.1</b> Lecture</a></li>
+<li class="chapter" data-level="6.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#pre-lab-work-4"><i class="fa fa-check"></i><b>6.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="6.3" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#lab-4"><i class="fa fa-check"></i><b>6.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#model-script-3"><i class="fa fa-check"></i><b>6.3.1</b> Model script</a></li>
+<li class="chapter" data-level="6.3.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#feedback-on-scripts-3"><i class="fa fa-check"></i><b>6.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#independent-learning-4"><i class="fa fa-check"></i><b>6.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-1-4"><i class="fa fa-check"></i><b>6.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="6.4.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-2-4"><i class="fa fa-check"></i><b>6.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="6.4.3" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-1-answers-4"><i class="fa fa-check"></i><b>6.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="6.4.4" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-2-answers-4"><i class="fa fa-check"></i><b>6.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PSYC234 (Weeks 15-19)</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="binary-log-regression" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Lecture 8 (Binary logistic regression)<a href="binary-log-regression.html#binary-log-regression" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="lecture-3" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Lecture<a href="binary-log-regression.html#lecture-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This lecture comprises four parts:</p>
+<p><strong>Part 1: Why do I need to worry about binary logistic regression?</strong></p>
+<p>Part 1 covers why it is important to understand binary logistic regression, and why it is not appropriate to run a linear regression model when the outcome is continuous. It also covers an introduction to binary logistic regression. The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=1877ca30-bcf3-4e6a-ba98-ae4b015f5fef">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853">here</a>.</p>
+<p><strong>Part 2: Odds and odds ratios</strong></p>
+<p>Part 2 introduces the concept of odds and odds ratios, and provides an example of how to calculate odds ratios manually (to aid in understanding about what odds and odds ratios represents). The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=b6705542-da23-4250-9a63-ae4b015f5f26">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853">here</a>.</p>
+<p><strong>Part 3: Assumptions of binary logistic regression with one categorical predictor</strong></p>
+<p>Part 3 covers the assumptions of binary logistic regression when you have one categorical predictor. The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=9a0086de-0560-47e8-a00a-ae4b015f5e9c">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853">here</a>.</p>
+<p><strong>Part 4: Running a binary logistic regression model (with one categorical predictor) in R</strong></p>
+<p>Part 4 covers how to run a binary logistic regression model with one categorical predictor in R, and how to interpret the output. The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=15685413-28a2-454b-8d2e-ae4b015f5e2f">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853">here</a>.</p>
+</div>
+<div id="pre-lab-work-3" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Pre-lab work<a href="binary-log-regression.html#pre-lab-work-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before the lab, please watch the following <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=843d96e8-91f6-4476-b9f0-ae4c00d8aa6f">video</a>. This walks you through how to run a binary logistic regression model with one categorical predictor in R. The R markdown script covered in this video can be found <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1800879">here</a>.</p>
+</div>
+<div id="lab-3" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Lab<a href="binary-log-regression.html#lab-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the lab, we’ll run a binary logistic regression model with one categorical predictor in R. Please download the following datafile: <a href="files/Week_18/reptile_data.csv">reptile_data.csv</a>.</p>
+<p>Use one of the following templates to ensure the packages are loaded in correctly to avoid conflicts: <a href="files/Week_18/Week_18_RMarkdown_template.Rmd">R Markdown</a> and <a href="files/week_18/Week_18_R_template.R">R</a>.</p>
+<p>The datasets relate to the following research question:</p>
+<p>You are interested in whether the country an individual lives (UK/Australia) predicts reptile ownership (Yes/No).</p>
+<p>In the dataset, the outcome variable (reptile) is coded as “Y” and “N” (where Y = Yes and N = No)</p>
+<p>To make sure we should all end up with the same output, set UK as your reference category for the “Country” variable.</p>
+<ol style="list-style-type: decimal">
+<li><p>Work through the following steps:</p></li>
+<li><p>Prepare our data for analysis</p></li>
+<li><p>Explore our data</p></li>
+<li><p>Run the binary logistic regression model</p></li>
+<li><p>Evaluate the model</p></li>
+<li><p>Evaluate the individual predictors</p></li>
+<li><p>Predicted probabilities</p></li>
+<li><p>Interpret the output</p></li>
+</ol>
+<div id="model-script-2" class="section level3 hasAnchor" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> Model script<a href="binary-log-regression.html#model-script-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Here is a <a href="files/Week_18/Week_18_Lab_Model_Script.Rmd">model script</a> that produces the answers to the above research question. I use the word ‘model’ loosely, as you may have used different functions you’ve learned over the last two years (and that’s absolutely fine!). So don’t worry if you haven’t used the exact same functions as me. You should end up with the same results and interpretation at the end though.</p>
+</div>
+<div id="feedback-on-scripts-2" class="section level3 hasAnchor" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> Feedback on scripts<a href="binary-log-regression.html#feedback-on-scripts-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Feedback on R scripts submitted by students is available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785828">here</a>.</p>
+</div>
+</div>
+<div id="independent-learning-3" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Independent learning<a href="binary-log-regression.html#independent-learning-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This is optional, but recommended. The answers are found below.</p>
+<div id="activity-1-3" class="section level3 hasAnchor" number="5.4.1">
+<h3><span class="header-section-number">5.4.1</span> Activity 1<a href="binary-log-regression.html#activity-1-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Calculating odds ratios manually</strong></p>
+<p>Activity 1 will involve work with the following data. You are a researcher interested in whether being excited (yes/no) predicts whether an individual passes their driving test (yes/no). Here is a table of frequencies.</p>
+<pre><code>##               
+##                Excited - No Excited - Yes
+##   Passed - No            29            12
+##   Passed - Yes            8            14</code></pre>
+<p><strong>What are the odds of passing the driving test in the “Excited – Yes” group?</strong></p>
+<p><strong>What are the odds of passing the driving test in the “Excited – No” group?</strong></p>
+<p><strong>What is the odds ratio (where “Excited – No” is the original odds)?</strong></p>
+<p><strong>What does this odds ratio mean?</strong></p>
+<p><strong>Is there evidence of quasi-complete separation or complete separation here? Give a reason for your answer.</strong></p>
+</div>
+<div id="activity-2-3" class="section level3 hasAnchor" number="5.4.2">
+<h3><span class="header-section-number">5.4.2</span> Activity 2<a href="binary-log-regression.html#activity-2-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Interpreting R output</strong></p>
+<p>Activity 2 examines the following research question. You are a researcher interested in whether being rich (yes/no) predicts whether an individual owns a Tesla. Here is a table of frequencies:</p>
+<pre><code>##             
+##              Tesla - Yes Tesla - No
+##   Rich - No           34          3
+##   Rich - Yes           5          5</code></pre>
+<p>You analyse this data in R and the output of your model is below. For the outcome, you set “0” as “Has a Tesla – No” and “1” as “Has a Tesla – Yes”</p>
+<div id="model-output" class="section level4 hasAnchor" number="5.4.2.1">
+<h4><span class="header-section-number">5.4.2.1</span> Model output<a href="binary-log-regression.html#model-output" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Here is the model output:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="binary-log-regression.html#cb57-1" aria-hidden="true" tabindex="-1"></a>l8_w2<span class="sc">$</span>tesla_numeric <span class="ot">&lt;-</span> <span class="fu">recode</span>(l8_w2<span class="sc">$</span>Tesla, <span class="st">&quot;No&quot;</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">&quot;Yes&quot;</span><span class="ot">=</span> <span class="dv">1</span>) </span>
+<span id="cb57-2"><a href="binary-log-regression.html#cb57-2" aria-hidden="true" tabindex="-1"></a>tesla_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(tesla_numeric <span class="sc">~</span> Rich, <span class="at">data =</span> l8_w2, <span class="at">family=</span><span class="fu">binomial</span>())</span>
+<span id="cb57-3"><a href="binary-log-regression.html#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tesla_model)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = tesla_numeric ~ Rich, family = binomial(), data = l8_w2)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.1774  -0.4112  -0.4112  -0.4112   2.2416  
+## 
+## Coefficients:
+##             Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  -2.4277     0.6023  -4.031 0.0000556 ***
+## RichYes       2.4277     0.8734   2.780   0.00544 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 42.885  on 46  degrees of freedom
+## Residual deviance: 34.687  on 45  degrees of freedom
+## AIC: 38.687
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+<div id="evaluating-the-model-output" class="section level4 hasAnchor" number="5.4.2.2">
+<h4><span class="header-section-number">5.4.2.2</span> Evaluating the model output<a href="binary-log-regression.html#evaluating-the-model-output" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>You run some code to produce the model’s chi-square statistic, the degrees of freedom and the p-value. These are displayed below:</p>
+<p>Chi square = 8.2
+Degrees of freedom = 1
+P-value = 0.004</p>
+<p><strong>What do these values indicate?</strong></p>
+</div>
+<div id="evaluating-pseudo-r2" class="section level4 hasAnchor" number="5.4.2.3">
+<h4><span class="header-section-number">5.4.2.3</span> Evaluating Pseudo R2<a href="binary-log-regression.html#evaluating-pseudo-r2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="binary-log-regression.html#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PseudoR2</span>(tesla_model, <span class="at">which =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div>
+<pre><code>##        McFadden     McFaddenAdj        CoxSnell      Nagelkerke   AldrichNelson VeallZimmermann           Efron 
+##       0.1911699       0.0978972       0.1600663       0.2674640       0.1485248       0.3113013       0.2081168 
+## McKelveyZavoina            Tjur             AIC             BIC          logLik         logLik0              G2 
+##       0.2308156       0.2081168      38.6866797      42.3869749     -17.3433399     -21.4425007       8.1983218</code></pre>
+<p><strong>Which Pseudo R2 values might you report (based on the lecture)?</strong></p>
+<p><strong>What is the value of these Pseudo R2s?</strong></p>
+</div>
+<div id="evaluating-the-individual-predictors" class="section level4 hasAnchor" number="5.4.2.4">
+<h4><span class="header-section-number">5.4.2.4</span> Evaluating the individual predictors<a href="binary-log-regression.html#evaluating-the-individual-predictors" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Looking back at the summary output, consider the following questions:</p>
+<p><strong>What is the reference category for the predictor “Rich”?</strong></p>
+<p><strong>What does the Intercept Estimate represent?</strong></p>
+<p><strong>What does the RichYes Estimate represent?</strong></p>
+<div id="exponentiating-the-estimates" class="section level5 hasAnchor" number="5.4.2.4.1">
+<h5><span class="header-section-number">5.4.2.4.1</span> Exponentiating the estimates:<a href="binary-log-regression.html#exponentiating-the-estimates" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="binary-log-regression.html#cb61-1" aria-hidden="true" tabindex="-1"></a>tesla_model_exponentiated <span class="ot">&lt;-</span> <span class="fu">exp</span>(tesla_model<span class="sc">$</span>coefficients)</span>
+<span id="cb61-2"><a href="binary-log-regression.html#cb61-2" aria-hidden="true" tabindex="-1"></a>tesla_model_exponentiated</span></code></pre></div>
+<pre><code>## (Intercept)     RichYes 
+##  0.08823529 11.33333333</code></pre>
+<p><strong>What does the Intercept represent?</strong></p>
+<p><strong>What does the RichYes value represent?</strong></p>
+<p><strong>Can you interpret the RichYes value?</strong></p>
+</div>
+<div id="confidence-intervals" class="section level5 hasAnchor" number="5.4.2.4.2">
+<h5><span class="header-section-number">5.4.2.4.2</span> Confidence intervals:<a href="binary-log-regression.html#confidence-intervals" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="binary-log-regression.html#cb63-1" aria-hidden="true" tabindex="-1"></a>tesla_model_odds_confidence_intervals <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">confint</span>(tesla_model))</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="binary-log-regression.html#cb65-1" aria-hidden="true" tabindex="-1"></a>tesla_model_odds_confidence_intervals</span></code></pre></div>
+<pre><code>##                  2.5 %     97.5 %
+## (Intercept) 0.02124284  0.2452701
+## RichYes     2.15765202 71.8937055</code></pre>
+<p><strong>What does the RichYes 95% confidence intervals represent?</strong></p>
+<p><strong>From the p-value in the summary table for the RichYes row, what can you conclude?</strong></p>
+<p><strong>Is there another output we could look at to reach the same broad conclusion (regarding whether the predictor significantly predicts the outcome)?</strong></p>
+</div>
+</div>
+</div>
+<div id="activity-1-answers-3" class="section level3 hasAnchor" number="5.4.3">
+<h3><span class="header-section-number">5.4.3</span> Activity 1: Answers<a href="binary-log-regression.html#activity-1-answers-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Calculating odds ratios manually</strong></p>
+<pre><code>##               
+##                Excited - No Excited - Yes
+##   Passed - No            29            12
+##   Passed - Yes            8            14</code></pre>
+<p><strong>What are the odds of passing the driving test in the “Excited – Yes” group?</strong></p>
+<p><span style="color:purple">The probability of individuals who are excited (Excited – Yes) passing the driving test:</span></p>
+<p><span style="color:purple">14/26 = 0.5384615385</span></p>
+<p><span style="color:purple">14 is the number of participants who were excited and passed the driving test. </span></p>
+<p><span style="color:purple">26 is the total number of individuals who responded “Excited – Yes” (14+12)</span></p>
+<p><span style="color:purple">The probability of individuals who are excited (Excited – Yes) not passing the driving test: </span></p>
+<p><span style="color:purple">12/26 = 0.4615384615</span></p>
+<p><span style="color:purple">12 is the number of participants who were excited and did not pass the driving test.</span></p>
+<p><span style="color:purple">26 is the total number of individuals who responded “Excited – Yes” (14+12)</span></p>
+<p><span style="color:purple">The odds of individuals who are excited passing the driving test:</span></p>
+<p><span style="color:purple">0.5384615385 / 0.4615384615 = 1.1666666668</span></p>
+<p><strong>What are the odds of passing the driving test in the “Excited – No” group?</strong></p>
+<p><span style="color:purple">The probability of individuals who are not excited (Excited – No) passing the driving test:</span></p>
+<p><span style="color:purple">8/37 = 0.216216216</span></p>
+<p><span style="color:purple">8 is the number of participants who were not excited and passed the driving test. </span></p>
+<p><span style="color:purple">37 is the total number of individuals who responded “Excited – No” (8+29)</span></p>
+<p><span style="color:purple">The probability of individuals who are excited (Excited - No) not passing the driving test: </span></p>
+<p><span style="color:purple">29/37 = 0.783783783</span></p>
+<p><span style="color:purple">29 is the number of participants who were not excited and did not pass the driving test. </span></p>
+<p><span style="color:purple">37 is the total number of individuals who responded “Excited – No” (8+29)</span></p>
+<p><span style="color:purple">The odds of individuals who are not excited passing the driving test:</span></p>
+<p><span style="color:purple">0.216216216 / 0.783783783 = 0.275862069</span></p>
+<p><strong>What is the odds ratio (where “Excited – No” is the original odds)?</strong></p>
+<p><span style="color:purple">1.1666666668 / 0.275862069 = 4.23</span></p>
+<p><span style="color:purple">The odds ratio = 4.23</span></p>
+<p><strong>What does this odds ratio mean?</strong></p>
+<p><span style="color:purple">Individuals who were excited had a 4.23x higher odds of passing the driving test relative to individuals who were not excited.</span></p>
+<p><strong>Is there evidence of quasi-complete separation or complete separation here? Give a reason for your answer.</strong></p>
+<p><span style="color:purple">No – all cells have quite a few observations so there is no evidence of quasi-complete separation or complete separation.</span></p>
+</div>
+<div id="activity-2-answers-3" class="section level3 hasAnchor" number="5.4.4">
+<h3><span class="header-section-number">5.4.4</span> Activity 2: Answers<a href="binary-log-regression.html#activity-2-answers-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Activity 2 examines the following research question. You are a researcher interested in whether being rich (yes/no) predicts whether an individual owns a Tesla. Here is a table of frequencies:</p>
+<pre><code>##             
+##              Tesla - Yes Tesla - No
+##   Rich - No           34          3
+##   Rich - Yes           5          5</code></pre>
+<p>You analyse this data in R and the output of your model is below. For the outcome, you set “0” as “Has a Tesla – No” and “1” as “Has a Tesla – Yes”</p>
+<div id="model-output-1" class="section level4 hasAnchor" number="5.4.4.1">
+<h4><span class="header-section-number">5.4.4.1</span> Model output<a href="binary-log-regression.html#model-output-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Here is the model output:</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="binary-log-regression.html#cb69-1" aria-hidden="true" tabindex="-1"></a>l8_w2<span class="sc">$</span>tesla_numeric <span class="ot">&lt;-</span> <span class="fu">recode</span>(l8_w2<span class="sc">$</span>Tesla, <span class="st">&quot;No&quot;</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">&quot;Yes&quot;</span><span class="ot">=</span> <span class="dv">1</span>) </span>
+<span id="cb69-2"><a href="binary-log-regression.html#cb69-2" aria-hidden="true" tabindex="-1"></a>tesla_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(tesla_numeric <span class="sc">~</span> Rich, <span class="at">data =</span> l8_w2, <span class="at">family=</span><span class="fu">binomial</span>())</span>
+<span id="cb69-3"><a href="binary-log-regression.html#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tesla_model)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = tesla_numeric ~ Rich, family = binomial(), data = l8_w2)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.1774  -0.4112  -0.4112  -0.4112   2.2416  
+## 
+## Coefficients:
+##             Estimate Std. Error z value  Pr(&gt;|z|)    
+## (Intercept)  -2.4277     0.6023  -4.031 0.0000556 ***
+## RichYes       2.4277     0.8734   2.780   0.00544 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 42.885  on 46  degrees of freedom
+## Residual deviance: 34.687  on 45  degrees of freedom
+## AIC: 38.687
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+<div id="evaluating-the-model-output-1" class="section level4 hasAnchor" number="5.4.4.2">
+<h4><span class="header-section-number">5.4.4.2</span> Evaluating the model output<a href="binary-log-regression.html#evaluating-the-model-output-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>You run some code to produce the model’s chi-square statistic, the degrees of freedom and the p-value. These are displayed below:</p>
+<p>Chi square = 8.2
+Degrees of freedom = 1
+P-value = 0.004</p>
+<p><strong>What do these values indicate?</strong></p>
+<p><span style="color:purple"><span class="math inline">\(x^{2}\)</span>(1) = 8.20, <em>p</em> = .004.</p>
+<p><span style="color:purple">This indicates that adding the “Rich” variable to our model significantly improved the fit, compared to the null model containing intercept only</span></p>
+</div>
+<div id="evaluating-pseudo-r2-1" class="section level4 hasAnchor" number="5.4.4.3">
+<h4><span class="header-section-number">5.4.4.3</span> Evaluating Pseudo R2<a href="binary-log-regression.html#evaluating-pseudo-r2-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="binary-log-regression.html#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">PseudoR2</span>(tesla_model, <span class="at">which =</span> <span class="st">&quot;all&quot;</span>)</span></code></pre></div>
+<pre><code>##        McFadden     McFaddenAdj        CoxSnell      Nagelkerke   AldrichNelson VeallZimmermann           Efron 
+##       0.1911699       0.0978972       0.1600663       0.2674640       0.1485248       0.3113013       0.2081168 
+## McKelveyZavoina            Tjur             AIC             BIC          logLik         logLik0              G2 
+##       0.2308156       0.2081168      38.6866797      42.3869749     -17.3433399     -21.4425007       8.1983218</code></pre>
+<p><strong>Which Pseudo R2 values might you report (based on the lecture)?</strong></p>
+<p><span style="color:purple">McFadden, CoxSnell and Nagelkerke</span></p>
+<p><strong>What is the value of these Pseudo R2s?</strong></p>
+<p><span style="color:purple">McFadden = 0.19
+CoxSnell = 0.16
+Nagelkerke = 0.27</span></p>
+</div>
+<div id="evaluating-the-individual-predictors-1" class="section level4 hasAnchor" number="5.4.4.4">
+<h4><span class="header-section-number">5.4.4.4</span> Evaluating the individual predictors<a href="binary-log-regression.html#evaluating-the-individual-predictors-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Looking back at the summary output, consider the following questions:</p>
+<p><strong>What is the reference category for the predictor “Rich”?</strong></p>
+<p><span style="color:purple">“No” is our reference category for the Rich variable</span></p>
+<p><strong>What does the Intercept Estimate represent?</strong></p>
+<p><span style="color:purple">The log odds of someone with a Rich value of “No” having a tesla</span></p>
+<p><strong>What does the RichYes Estimate represent?</strong></p>
+<p><span style="color:purple">The change in the log odds of having a tesla value of “Yes” when going from the reference category (RichNo) to RichYes</span></p>
+<div id="exponentiating-the-estimates-1" class="section level5 hasAnchor" number="5.4.4.4.1">
+<h5><span class="header-section-number">5.4.4.4.1</span> Exponentiating the estimates:<a href="binary-log-regression.html#exponentiating-the-estimates-1" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="binary-log-regression.html#cb73-1" aria-hidden="true" tabindex="-1"></a>tesla_model_exponentiated <span class="ot">&lt;-</span> <span class="fu">exp</span>(tesla_model<span class="sc">$</span>coefficients)</span>
+<span id="cb73-2"><a href="binary-log-regression.html#cb73-2" aria-hidden="true" tabindex="-1"></a>tesla_model_exponentiated</span></code></pre></div>
+<pre><code>## (Intercept)     RichYes 
+##  0.08823529 11.33333333</code></pre>
+<p><strong>What does the Intercept represent?</strong></p>
+<p><span style="color:purple">The odds of having a tesla for individuals who are not rich</span></p>
+<p><strong>What does the RichYes value represent?</strong></p>
+<p><span style="color:purple">The change in odds (i.e. the odds ratio) of having a tesla (i.e. tesla = yes) when going from RichNo to RichYes</span></p>
+<p><strong>Can you interprert the RichYes value?</strong></p>
+<p><span style="color:purple">The odds of having a tesla are 11.33x higher if you are rich than if you are not rich</span></p>
+</div>
+<div id="confidence-intervals-1" class="section level5 hasAnchor" number="5.4.4.4.2">
+<h5><span class="header-section-number">5.4.4.4.2</span> Confidence intervals:<a href="binary-log-regression.html#confidence-intervals-1" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="binary-log-regression.html#cb75-1" aria-hidden="true" tabindex="-1"></a>tesla_model_odds_confidence_intervals <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">confint</span>(tesla_model))</span></code></pre></div>
+<pre><code>## Waiting for profiling to be done...</code></pre>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="binary-log-regression.html#cb77-1" aria-hidden="true" tabindex="-1"></a>tesla_model_odds_confidence_intervals</span></code></pre></div>
+<pre><code>##                  2.5 %     97.5 %
+## (Intercept) 0.02124284  0.2452701
+## RichYes     2.15765202 71.8937055</code></pre>
+<p><strong>What does the RichYes 95% confidence intervals represent?</strong></p>
+<p><span style="color:purple">The 95% confidence around the odds ratio (for the comparison between RichNo to RichYes).</span></p>
+<p><strong>From the p-value in the summary table for the RichYes row, what can you conclude?</strong></p>
+<p><span style="color:purple">Whether an individual is rich (yes/no) significantly predicts whether they have a tesla (yes/no; <em>p</em> = .005)</span></p>
+<p><strong>Is there another output we could look at to reach the same broad conclusion (regarding whether the predictor significantly predicts the outcome)?</strong></p>
+<p><span style="color:purple">Yes, you could also look at the output for the 95% confidence interval around the odds ratio. As both the lower and upper bound of the confidence interval are above 1, this indicates that the p-value would be significant - whether an individual is rich (yes/no) significantly predicts whether they have a tesla (yes/no)</span></p>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="kruskal-friedman.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="extending-binary-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

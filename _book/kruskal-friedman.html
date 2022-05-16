@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman’s ANOVA) | PSYC234 (Weeks 15-19)</title>
+  <meta name="description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman’s ANOVA) | PSYC234 (Weeks 15-19)" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  <meta name="github-repo" content="amy-atkinson/PSYC234_Part2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman’s ANOVA) | PSYC234 (Weeks 15-19)" />
+  
+  <meta name="twitter:description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  
+
+<meta name="author" content="Amy Atkinson" />
+
+
+<meta name="date" content="2022-05-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="wilcoxon-rank-sum-signed-rank.html"/>
+<link rel="next" href="binary-log-regression.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="binomial_test.html"><a href="binomial_test.html"><i class="fa fa-check"></i><b>2</b> Lecture 5 (Binomial Test)</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="binomial_test.html"><a href="binomial_test.html#lecture"><i class="fa fa-check"></i><b>2.1</b> Lecture</a></li>
+<li class="chapter" data-level="2.2" data-path="binomial_test.html"><a href="binomial_test.html#pre-lab-work"><i class="fa fa-check"></i><b>2.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="2.3" data-path="binomial_test.html"><a href="binomial_test.html#lab"><i class="fa fa-check"></i><b>2.3</b> Lab</a></li>
+<li class="chapter" data-level="2.4" data-path="binomial_test.html"><a href="binomial_test.html#independent-learning"><i class="fa fa-check"></i><b>2.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="binomial_test.html"><a href="binomial_test.html#activity-1"><i class="fa fa-check"></i><b>2.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="2.4.2" data-path="binomial_test.html"><a href="binomial_test.html#activity-2"><i class="fa fa-check"></i><b>2.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="2.4.3" data-path="binomial_test.html"><a href="binomial_test.html#activity-1-answers"><i class="fa fa-check"></i><b>2.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="2.4.4" data-path="binomial_test.html"><a href="binomial_test.html#activity-2-answers"><i class="fa fa-check"></i><b>2.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html"><i class="fa fa-check"></i><b>3</b> Lecture 6 (Non-parametric tests: Wilcoxon rank-sum and Wilcoxon signed-rank tests)</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#lecture-1"><i class="fa fa-check"></i><b>3.1</b> Lecture</a></li>
+<li class="chapter" data-level="3.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#pre-lab-work-1"><i class="fa fa-check"></i><b>3.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="3.3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#lab-1"><i class="fa fa-check"></i><b>3.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#model-script"><i class="fa fa-check"></i><b>3.3.1</b> Model script</a></li>
+<li class="chapter" data-level="3.3.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#feedback-on-scripts"><i class="fa fa-check"></i><b>3.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#independent-learning-1"><i class="fa fa-check"></i><b>3.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-1-1"><i class="fa fa-check"></i><b>3.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="3.4.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-2-1"><i class="fa fa-check"></i><b>3.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="3.4.3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-1-answers-1"><i class="fa fa-check"></i><b>3.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="3.4.4" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-2-answers-1"><i class="fa fa-check"></i><b>3.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html"><i class="fa fa-check"></i><b>4</b> Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman’s ANOVA)</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#lecture-2"><i class="fa fa-check"></i><b>4.1</b> Lecture</a></li>
+<li class="chapter" data-level="4.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#pre-lab-work-2"><i class="fa fa-check"></i><b>4.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="4.3" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#lab-2"><i class="fa fa-check"></i><b>4.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#model-script-1"><i class="fa fa-check"></i><b>4.3.1</b> Model script</a></li>
+<li class="chapter" data-level="4.3.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#feedback-on-scripts-1"><i class="fa fa-check"></i><b>4.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#independent-learning-2"><i class="fa fa-check"></i><b>4.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-1-2"><i class="fa fa-check"></i><b>4.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="4.4.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-2-2"><i class="fa fa-check"></i><b>4.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="4.4.3" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-1-answers-2"><i class="fa fa-check"></i><b>4.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="4.4.4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-2-answers-2"><i class="fa fa-check"></i><b>4.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="binary-log-regression.html"><a href="binary-log-regression.html"><i class="fa fa-check"></i><b>5</b> Lecture 8 (Binary logistic regression)</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#lecture-3"><i class="fa fa-check"></i><b>5.1</b> Lecture</a></li>
+<li class="chapter" data-level="5.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#pre-lab-work-3"><i class="fa fa-check"></i><b>5.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="5.3" data-path="binary-log-regression.html"><a href="binary-log-regression.html#lab-3"><i class="fa fa-check"></i><b>5.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#model-script-2"><i class="fa fa-check"></i><b>5.3.1</b> Model script</a></li>
+<li class="chapter" data-level="5.3.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#feedback-on-scripts-2"><i class="fa fa-check"></i><b>5.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="binary-log-regression.html"><a href="binary-log-regression.html#independent-learning-3"><i class="fa fa-check"></i><b>5.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-1-3"><i class="fa fa-check"></i><b>5.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="5.4.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-2-3"><i class="fa fa-check"></i><b>5.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="5.4.3" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-1-answers-3"><i class="fa fa-check"></i><b>5.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="5.4.4" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-2-answers-3"><i class="fa fa-check"></i><b>5.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html"><i class="fa fa-check"></i><b>6</b> Lecture 9 (Extending binary logistic regression)</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#lecture-4"><i class="fa fa-check"></i><b>6.1</b> Lecture</a></li>
+<li class="chapter" data-level="6.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#pre-lab-work-4"><i class="fa fa-check"></i><b>6.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="6.3" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#lab-4"><i class="fa fa-check"></i><b>6.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#model-script-3"><i class="fa fa-check"></i><b>6.3.1</b> Model script</a></li>
+<li class="chapter" data-level="6.3.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#feedback-on-scripts-3"><i class="fa fa-check"></i><b>6.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#independent-learning-4"><i class="fa fa-check"></i><b>6.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-1-4"><i class="fa fa-check"></i><b>6.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="6.4.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-2-4"><i class="fa fa-check"></i><b>6.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="6.4.3" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-1-answers-4"><i class="fa fa-check"></i><b>6.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="6.4.4" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-2-answers-4"><i class="fa fa-check"></i><b>6.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PSYC234 (Weeks 15-19)</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="kruskal-friedman" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman’s ANOVA)<a href="kruskal-friedman.html#kruskal-friedman" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="lecture-2" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Lecture<a href="kruskal-friedman.html#lecture-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This lecture comprises two parts:</p>
+<p><strong>Part 1: Assessing normality with three or more independent groups and the Kruskal-Wallis test</strong></p>
+<p>Part 1 covers how to assess the assumption of normality with three or more independent groups. It also covers the theory behind the Kruskal-Wallis test, how to calculate the Kruskal-Wallis test statistic manually, how to run the test in R, how to interpret the output, and how to conduct post-hoc comparisons. The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=e79da0d4-faf9-4c1a-8912-ae4401036b38">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785819">here</a>.</p>
+<p><strong>Part 2: Assessing normality with three or more repeated measures and Friedman’s ANOVA</strong></p>
+<p>Part 2 covers how to assess the assumption of normality with three or more repeated measures. It also covers Friedman’s ANOVA, including: the theory behind the test, how to calculate the test statistic manually, how to run the test in R and how to interpret output, and how to conduct post-hoc comparisons. The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=fde6794c-2e40-40f6-a959-ae44010474d7">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785819">here</a>.</p>
+</div>
+<div id="pre-lab-work-2" class="section level2 hasAnchor" number="4.2">
+<h2><span class="header-section-number">4.2</span> Pre-lab work<a href="kruskal-friedman.html#pre-lab-work-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before the lab, please watch the following <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=1e2588f1-9fa4-4136-b2ef-ae44016b66a7">video</a>. This walks you through how to perform Friedman’s ANOVA in R.Please also take a look at this <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1792984">R markdown file</a>. This covers how to run a Kruskal-Wallis test and Friedman’s ANOVA in R.</p>
+</div>
+<div id="lab-2" class="section level2 hasAnchor" number="4.3">
+<h2><span class="header-section-number">4.3</span> Lab<a href="kruskal-friedman.html#lab-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the lab, we’ll practice running a Kruskal-Wallis test and Friedman’s ANOVA in R. Please download the following zip file which contains two datasets: <a href="files/Week_17/course_data_set.csv">course_data_set.csv</a> and <a href="files/Week_17/memory_data.csv">memory_data.csv</a>.</p>
+<p>The datasets relate to the following research questions:</p>
+<p><strong>1. Course dataset</strong></p>
+<p>You are a psychology lecturer. You hear that the library is offering three statistics courses. You are interested in whether students who attend the courses perform significantly differently from each other.</p>
+<p>You recruit 18 people and assign each one to a course. After the courses are finished, you ask them to write an R script. You time how long it takes students to complete the task. You are interested in whether there is a significant effect of course on the time taken to complete the task.</p>
+<p><strong>2. Memory dataset</strong></p>
+<p>You are a developmental psychologist. You are interested in whether working memory develops between 15 and 17 years of age.</p>
+<p>You recruit a sample of adolescents and test them on a working memory task when they are 15 years of age, 16 years of age, and 17 years of age.</p>
+<p>You then examine whether there is a significant effect of age on working memory score.</p>
+<div id="model-script-1" class="section level3 hasAnchor" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span> Model script<a href="kruskal-friedman.html#model-script-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Here is a <a href="files/Week_17/Week_17_Lab_Model_Script.Rmd">model script</a> that produces the answers to the above research questions. I use the word ‘model’ loosely, as you may have used different functions you’ve learned over the last two years (and that’s absolutely fine!). So don’t worry if you haven’t used the exact same functions as me. You should end up with the same results and interpretation at the end though.</p>
+</div>
+<div id="feedback-on-scripts-1" class="section level3 hasAnchor" number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span> Feedback on scripts<a href="kruskal-friedman.html#feedback-on-scripts-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Feedback on R scripts submitted by students is available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785821">here</a>.</p>
+</div>
+</div>
+<div id="independent-learning-2" class="section level2 hasAnchor" number="4.4">
+<h2><span class="header-section-number">4.4</span> Independent learning<a href="kruskal-friedman.html#independent-learning-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This is optional, but recommended. The answers are found below.</p>
+<div id="activity-1-2" class="section level3 hasAnchor" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span> Activity 1<a href="kruskal-friedman.html#activity-1-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Understanding how the non-parametric tests differ and when to use them</strong></p>
+<p>It is really important that you understand which statistical test you should run in different situations. This activity will test your knowledge of the statistical tests you learned during this lecture and {#wilcoxon-rank-sum-signed-rank}.</p>
+<p>In each of the following scenario, you are interested in whether the type of chocolate eaten affects feelings of contentment (response = 0-100). For each scenario, think about the following questions:</p>
+<p><strong>Scenario 1: You recruit 20 participants. On day 1, they eat milk chocolate. On day 2, they eat dark chocolate. On day 3, they eat white chocolate.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>How would you check whether the assumption of normality is violated for this design?</p></li>
+<li><p>If the assumption of normality is violated, which non-parametric test would you run?</p></li>
+</ol>
+<p><strong>Scenario 2: You recruit 12 participants and randomly assign them to either a “white chocolate”, “milk chocolate”, or “dark chocolate” group.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>How would you check whether the assumption of normality is violated for this design?</p></li>
+<li><p>If the assumption of normality is violated, which non-parametric test would you run?</p></li>
+</ol>
+<p><strong>Scenario 3: You recruit 7 participants. On day 1, they eat milk chocolate and on day 2, they eat dark chocolate.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>How would you check whether the assumption of normality is violated for this design?</p></li>
+<li><p>If the assumption of normality is violated, which non-parametric test would you run?</p></li>
+</ol>
+<p><strong>Scenario 4: You recruit 10 participants and randomly assign them to either a “white chocolate” or “milk chocolate” group.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li><p>How would you check whether the assumption of normality is violated for this design?</p></li>
+<li><p>If the assumption of normality is violated, which non-parametric test would you run?</p></li>
+</ol>
+</div>
+<div id="activity-2-2" class="section level3 hasAnchor" number="4.4.2">
+<h3><span class="header-section-number">4.4.2</span> Activity 2<a href="kruskal-friedman.html#activity-2-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Interpreting R output</strong></p>
+<p>Interpret the following R output. Part 1 uses an independent groups design, whilst part 2 uses a repeated measures design.</p>
+<div id="part-1-an-independent-groups-design" class="section level4 hasAnchor" number="4.4.2.1">
+<h4><span class="header-section-number">4.4.2.1</span> Part 1: An independent groups design<a href="kruskal-friedman.html#part-1-an-independent-groups-design" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>You are a developmental researcher interested in whether the books children are exposed to affects their language production (how many words they can say). You recruit 21 2-year-old children and assign them to one of three groups – “Pinocchio”, “Cinderella”, and “Gruffalo”. The children’s parents then read this story every day for three months (i.e. children in the “Gruffalo” group read the Gruffalo every day). You then ask their parents to complete a language production assessment on their child (score = 0-100).</p>
+<div id="testing-the-assumption-of-normality-4" class="section level5 hasAnchor" number="4.4.2.1.1">
+<h5><span class="header-section-number">4.4.2.1.1</span> Testing the assumption of normality:<a href="kruskal-friedman.html#testing-the-assumption-of-normality-4" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div id="group-1-2" class="section level6 hasAnchor" number="4.4.2.1.1.1">
+<h6><span class="header-section-number">4.4.2.1.1.1</span> Group 1:<a href="kruskal-friedman.html#group-1-2" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<p><img src="_main_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  Pinocchio$Words
+## W = 0.75208, p-value = 0.01334</code></pre>
+</div>
+<div id="group-2-2" class="section level6 hasAnchor" number="4.4.2.1.1.2">
+<h6><span class="header-section-number">4.4.2.1.1.2</span> Group 2:<a href="kruskal-friedman.html#group-2-2" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<p><img src="_main_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  Cinderella$Words
+## W = 0.96705, p-value = 0.8764</code></pre>
+</div>
+<div id="group-3" class="section level6 hasAnchor" number="4.4.2.1.1.3">
+<h6><span class="header-section-number">4.4.2.1.1.3</span> Group 3:<a href="kruskal-friedman.html#group-3" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<p><img src="_main_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  Gruffalo$Words
+## W = 0.89119, p-value = 0.2809</code></pre>
+<p>Is the assumption violated?</p>
+</div>
+</div>
+<div id="interpret-the-descriptive-statistics-and-the-model-output-4" class="section level5 hasAnchor" number="4.4.2.1.2">
+<h5><span class="header-section-number">4.4.2.1.2</span> Interpret the descriptive statistics and the model output<a href="kruskal-friedman.html#interpret-the-descriptive-statistics-and-the-model-output-4" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<pre><code>## # A tibble: 3 × 4
+##   Book       med_words min_words max_words
+##   &lt;chr&gt;          &lt;int&gt;     &lt;int&gt;     &lt;int&gt;
+## 1 Cinderella        16        12        18
+## 2 Gruffalo          67        61        69
+## 3 Pinocchio         25        21        58</code></pre>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  Words by Book
+## Kruskal-Wallis chi-squared = 17.853, df = 2, p-value = 0.0001328</code></pre>
+<pre><code>## Warning: Book was coerced to a factor.</code></pre>
+<pre><code>## Dunn (1964) Kruskal-Wallis multiple comparison</code></pre>
+<pre><code>##   p-values adjusted with the Holm method.</code></pre>
+<pre><code>##               Comparison         Z       P.unadj         P.adj
+## 1  Cinderella - Gruffalo -4.225276 0.00002386477 0.00007159432
+## 2 Cinderella - Pinocchio -2.112638 0.03463174827 0.06926349653
+## 3   Gruffalo - Pinocchio  2.112638 0.03463174827 0.03463174827</code></pre>
+<p>What can we conclude? Report in APA format.</p>
+</div>
+</div>
+<div id="part-2-a-repeated-measures-design" class="section level4 hasAnchor" number="4.4.2.2">
+<h4><span class="header-section-number">4.4.2.2</span> Part 2: A repeated measures design<a href="kruskal-friedman.html#part-2-a-repeated-measures-design" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>You are a researcher interested in whether the number of hours sleep individuals get affects their performance on an attention task (score = 0-100). You recruit nine participants, with all participants taking part in three conditions. In the first condition, participants get 6 hours sleep the night before (6 hours). In the second condition, they get 8 hours sleep the night before (8 hours), and in the third condition, they get 10 hours sleep the night before (10 hours).</p>
+<div id="testing-the-assumption-of-normality-5" class="section level5 hasAnchor" number="4.4.2.2.1">
+<h5><span class="header-section-number">4.4.2.2.1</span> Testing the assumption of normality:<a href="kruskal-friedman.html#testing-the-assumption-of-normality-5" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>6 hours condition:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  sleep_data$six_hours
+## W = 0.7785, p-value = 0.01157</code></pre>
+<p>8 hours condition:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  sleep_data$eight_hours
+## W = 0.90246, p-value = 0.2666</code></pre>
+<p>10 hours condition:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  sleep_data$ten_hours
+## W = 0.96963, p-value = 0.8915</code></pre>
+<p>Is the assumption violated?</p>
+</div>
+<div id="interpret-the-descriptive-statistics-and-the-model-output-5" class="section level5 hasAnchor" number="4.4.2.2.2">
+<h5><span class="header-section-number">4.4.2.2.2</span> Interpret the descriptive statistics and the model output<a href="kruskal-friedman.html#interpret-the-descriptive-statistics-and-the-model-output-5" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<pre><code>##    Participant   Condition Score
+## 1            1   six_hours    46
+## 2            2   six_hours    47
+## 3            3   six_hours    49
+## 4            4   six_hours    54
+## 5            5   six_hours    89
+## 6            6   six_hours    86
+## 7            7   six_hours    84
+## 8            8   six_hours    81
+## 9            9   six_hours    49
+## 10           1 eight_hours    66
+## 11           2 eight_hours    68
+## 12           3 eight_hours    69
+## 13           4 eight_hours    73
+## 14           5 eight_hours    76
+## 15           6 eight_hours    78
+## 16           7 eight_hours    67
+## 17           8 eight_hours    80
+## 18           9 eight_hours    81
+## 19           1   ten_hours    96
+## 20           2   ten_hours    97
+## 21           3   ten_hours    95
+## 22           4   ten_hours    96
+## 23           5   ten_hours    94
+## 24           6   ten_hours    92
+## 25           7   ten_hours    91
+## 26           8   ten_hours    95
+## 27           9   ten_hours    99</code></pre>
+<pre><code>## 
+##  Friedman rank sum test
+## 
+## data:  as.matrix(sleep_data_reduced)
+## Friedman chi-squared = 13.556, df = 2, p-value = 0.001139</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using Conover&#39;s all-pairs test for a two-way balanced complete block design</code></pre>
+<pre><code>## data: y, groups and blocks</code></pre>
+<pre><code>##           eight_hours six_hours
+## six_hours 0.817       -        
+## ten_hours 0.015       0.014</code></pre>
+<pre><code>## 
+## P value adjustment method: holm</code></pre>
+<pre><code>##   med_six_hours med_eight_hours med_ten_hours min_six_hours min_eight_hours min_ten_hours max_six_hours max_eight_hours
+## 1            54              73            95            46              66            91            89              81
+##   max_ten_hours
+## 1            99</code></pre>
+<p>What can we conclude? Report in APA format.</p>
+</div>
+</div>
+</div>
+<div id="activity-1-answers-2" class="section level3 hasAnchor" number="4.4.3">
+<h3><span class="header-section-number">4.4.3</span> Activity 1: Answers<a href="kruskal-friedman.html#activity-1-answers-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Scenario 1: You recruit 20 participants. On day 1, they eat milk chocolate. On day 2, they eat dark chocolate. On day 3, they eat white chocolate.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>How would you check whether the assumption of normality is violated for this design?</li>
+</ol>
+<p><span style="color:purple">Assess whether the assumption of normality is violated per condition. This can be done using Q-Q plots and the Shapiro-Wilk test</span></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>If the assumption of normality is violated, which non-parametric test would you run?</li>
+</ol>
+<p><span style="color:purple">Friedman’s ANOVA</span></p>
+<p><strong>Scenario 2: You recruit 12 participants and randomly assign them to either a “white chocolate”, “milk chocolate”, or “dark chocolate” group.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>How would you check whether the assumption of normality is violated for this design?</li>
+</ol>
+<p><span style="color:purple">Assess whether the assumption of normality is violated per group. This can be done using Q-Q plots and the Shapiro-Wilk test.</span></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>If the assumption of normality is violated, which non-parametric test would you run?</li>
+</ol>
+<p><span style="color:purple">Kruskal-Wallis test</span></p>
+<p><strong>Scenario 3: You recruit 7 participants. On day 1, they eat milk chocolate and on day 2, they eat dark chocolate.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>How would you check whether the assumption of normality is violated for this design?</li>
+</ol>
+<p><span style="color:purple">Calculate a difference score for each participant (Timepoint 1 – Timepoint 2). Assess whether the assumption of normality is violated for the “difference”. This can be done using Q-Q plots and the Shapiro-Wilk test.</span></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>If the assumption of normality is violated, which non-parametric test would you run?</li>
+</ol>
+<p><span style="color:purple">Wilcoxon signed-rank test</span></p>
+<p><strong>Scenario 4: You recruit 10 participants and randomly assign them to either a “white chocolate” or “milk chocolate” group.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>How would you check whether the assumption of normality is violated for this design?</li>
+</ol>
+<p><span style="color:purple">Assess whether the assumption of normality is violated per group. This can be done using Q-Q plots and the Shapiro-Wilk test</span></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>If the assumption of normality is violated, which non-parametric test would you run?</li>
+</ol>
+<p><span style="color:purple">Wilcoxon rank-sum test</span></p>
+</div>
+<div id="activity-2-answers-2" class="section level3 hasAnchor" number="4.4.4">
+<h3><span class="header-section-number">4.4.4</span> Activity 2: Answers<a href="kruskal-friedman.html#activity-2-answers-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="part-1-an-independent-groups-design-1" class="section level4 hasAnchor" number="4.4.4.1">
+<h4><span class="header-section-number">4.4.4.1</span> Part 1: An independent groups design<a href="kruskal-friedman.html#part-1-an-independent-groups-design-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="testing-the-assumption-of-normality-6" class="section level5 hasAnchor" number="4.4.4.1.1">
+<h5><span class="header-section-number">4.4.4.1.1</span> Testing the assumption of normality:<a href="kruskal-friedman.html#testing-the-assumption-of-normality-6" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<div id="group-1-3" class="section level6 hasAnchor" number="4.4.4.1.1.1">
+<h6><span class="header-section-number">4.4.4.1.1.1</span> Group 1:<a href="kruskal-friedman.html#group-1-3" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<p><img src="_main_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  Pinocchio$Words
+## W = 0.75208, p-value = 0.01334</code></pre>
+</div>
+<div id="group-2-3" class="section level6 hasAnchor" number="4.4.4.1.1.2">
+<h6><span class="header-section-number">4.4.4.1.1.2</span> Group 2:<a href="kruskal-friedman.html#group-2-3" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<p><img src="_main_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  Cinderella$Words
+## W = 0.96705, p-value = 0.8764</code></pre>
+</div>
+<div id="group-3-1" class="section level6 hasAnchor" number="4.4.4.1.1.3">
+<h6><span class="header-section-number">4.4.4.1.1.3</span> Group 3:<a href="kruskal-friedman.html#group-3-1" class="anchor-section" aria-label="Anchor link to header"></a></h6>
+<p><img src="_main_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  Gruffalo$Words
+## W = 0.89119, p-value = 0.2809</code></pre>
+<p><strong>Is the assumption violated?</strong></p>
+<p><span style="color:purple">The Q-Q plot and the Shapiro-Wilk test suggests that the assumption of normality is violated for the Pinocchio group. Data in the Cinderella and Gruffalo group does not appear to violate the assumption.</span></p>
+</div>
+</div>
+<div id="interpret-the-descriptive-statistics-and-the-model-output-6" class="section level5 hasAnchor" number="4.4.4.1.2">
+<h5><span class="header-section-number">4.4.4.1.2</span> Interpret the descriptive statistics and the model output<a href="kruskal-friedman.html#interpret-the-descriptive-statistics-and-the-model-output-6" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<pre><code>## # A tibble: 3 × 4
+##   Book       med_words min_words max_words
+##   &lt;chr&gt;          &lt;int&gt;     &lt;int&gt;     &lt;int&gt;
+## 1 Cinderella        16        12        18
+## 2 Gruffalo          67        61        69
+## 3 Pinocchio         25        21        58</code></pre>
+<pre><code>## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  Words by Book
+## Kruskal-Wallis chi-squared = 17.853, df = 2, p-value = 0.0001328</code></pre>
+<pre><code>## Warning: Book was coerced to a factor.</code></pre>
+<pre><code>## Dunn (1964) Kruskal-Wallis multiple comparison</code></pre>
+<pre><code>##   p-values adjusted with the Holm method.</code></pre>
+<pre><code>##               Comparison         Z       P.unadj         P.adj
+## 1  Cinderella - Gruffalo -4.225276 0.00002386477 0.00007159432
+## 2 Cinderella - Pinocchio -2.112638 0.03463174827 0.06926349653
+## 3   Gruffalo - Pinocchio  2.112638 0.03463174827 0.03463174827</code></pre>
+<p><strong>What can we conclude? Report in APA format.</strong></p>
+<p><span style="color:purple">The Kruskal-Wallis test revealed a significant effect of book on the language production score, <em>H</em>(2) = 17.85, <em>p</em> &lt; .001. Post-hoc comparisons were conducted using Dunn’s test, with p-values corrected using Bonferroni-Holm. There was a significant difference between the Cinderella (median = 16; range = 12-18) and the Gruffalo groups (median = 67; range = 61-69), with participants in the Gruffalo group achieving a significantly higher score (<em>p</em> &lt; .001). Participants in the Gruffalo group also achieved a significantly higher score than participants in the Pinocchio group (median = 25; range = 21-58; <em>p</em> = .035). No significant difference was observed between the Cinderella and the Pinocchio groups (<em>p</em> = .069).</span></p>
+</div>
+</div>
+<div id="part-2-a-repeated-measures-design-1" class="section level4 hasAnchor" number="4.4.4.2">
+<h4><span class="header-section-number">4.4.4.2</span> Part 2: A repeated measures design<a href="kruskal-friedman.html#part-2-a-repeated-measures-design-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="testing-the-assumption-of-normality-7" class="section level5 hasAnchor" number="4.4.4.2.1">
+<h5><span class="header-section-number">4.4.4.2.1</span> Testing the assumption of normality:<a href="kruskal-friedman.html#testing-the-assumption-of-normality-7" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>6 hours condition:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  sleep_data$six_hours
+## W = 0.7785, p-value = 0.01157</code></pre>
+<p>8 hours condition:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  sleep_data$eight_hours
+## W = 0.90246, p-value = 0.2666</code></pre>
+<p>10 hours condition:</p>
+<p><img src="_main_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  sleep_data$ten_hours
+## W = 0.96963, p-value = 0.8915</code></pre>
+<p><strong>Is the assumption violated?</strong></p>
+<p><span style="color:purple">Data in the 6 hour condition appears to violate the assumption of normality.</span></p>
+</div>
+<div id="interpret-the-descriptive-statistics-and-the-model-output-7" class="section level5 hasAnchor" number="4.4.4.2.2">
+<h5><span class="header-section-number">4.4.4.2.2</span> Interpret the descriptive statistics and the model output<a href="kruskal-friedman.html#interpret-the-descriptive-statistics-and-the-model-output-7" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<pre><code>## 
+##  Friedman rank sum test
+## 
+## data:  as.matrix(sleep_data_reduced)
+## Friedman chi-squared = 13.556, df = 2, p-value = 0.001139</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using Conover&#39;s all-pairs test for a two-way balanced complete block design</code></pre>
+<pre><code>## data: y, groups and blocks</code></pre>
+<pre><code>##           eight_hours six_hours
+## six_hours 0.817       -        
+## ten_hours 0.015       0.014</code></pre>
+<pre><code>## 
+## P value adjustment method: holm</code></pre>
+<pre><code>##   med_six_hours med_eight_hours med_ten_hours min_six_hours min_eight_hours min_ten_hours max_six_hours max_eight_hours
+## 1            54              73            95            46              66            91            89              81
+##   max_ten_hours
+## 1            99</code></pre>
+<p><strong>What can we conclude? Report in APA format.</strong></p>
+<p><span style="color:purple">A Friedman’s ANOVA revealed a significantly effect of sleep hours on the attention score, <span class="math inline">\(x^{2}_{F}\)</span>(2) = 13.56, <em>p</em> = .001. Post-hoc comparisons were then conducting using the Conover test, with p-values corrected using Bonferroni-Holm. A significant difference emerged between the 6 hour (median = 54; range = 46-89) and the 10 hour conditions (median = 95; range = 91-99; <em>p</em> =.014), with participants performing better in the 10 hour condition. There was also a significant difference between the 8 hour (median = 73; range = 66-81) and the 10 hour conditions (<em>p</em> = .015). No significant difference emerged between the 6 hour and 8 hour conditions (<em>p</em> = .817).</span></p>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="wilcoxon-rank-sum-signed-rank.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="binary-log-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

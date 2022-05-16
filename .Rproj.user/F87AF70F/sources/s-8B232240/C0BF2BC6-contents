@@ -1,0 +1,378 @@
+# Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman's ANOVA) {#kruskal-friedman}
+
+```{r , include=FALSE}
+library(cowplot)
+library(FSA)
+library(PMCMRplus)
+library(knitr)
+library(kableExtra)
+library(tidyverse) 
+options(scipen=999)
+
+recode <- dplyr::recode
+select <- dplyr::select
+
+```
+## Lecture
+
+This lecture comprises two parts:
+
+**Part 1: Assessing normality with three or more independent groups and the Kruskal-Wallis test**
+
+Part 1 covers how to assess the assumption of normality with three or more independent groups. It also covers the theory behind the Kruskal-Wallis test, how to calculate the Kruskal-Wallis test statistic manually, how to run the test in R,  how to interpret the output, and how to conduct post-hoc comparisons.
+
+The lecture recording is available [here]("https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=fb98a72c-5f74-4fc7-bc51-ae3d01751e29)
+
+The slides are available here:
+
+**Part 2: Assessing normality with three or more repeated measures and Friedman's ANOVA**
+
+Part 2 covers how to assess the assumption of normality with three or more repeated measures. It also covers Friedman's ANOVA, including: the theory behind the test, how to calculate the test statistic manually, how to run the test in R and how to interpret output, and how to conduct post-hoc comparisons.
+
+The lecture recording is available [here]("https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=31ce4852-0c15-42b2-ab69-ae3d01800ef4)
+
+Slides: 
+
+## Pre-lab work
+
+Before the lab, please watch the following video. This walks you through how to perform Friedman's ANOVA in R.
+
+Please also take a look at this R markdown file. This covers how to run a Kruskal-Wallis test and Friedman's ANOVA in R:  
+
+## Lab
+
+In the lab, we'll practice running a Kruskal-Wallis test and Friedman's ANOVA in R. Please download the following zip file which contains two datasets: [course_data_set.csv](files/Week_17/course_data_set.csv) and [memory_data.csv](files/Week_17/memory_data.csv). 
+
+The datasets relate to the following research questions:
+
+**1. Course dataset**
+
+You are a psychology lecturer. You hear that the library is offering three statistics courses. You are interested in whether students who attend the courses perform significantly differently from each other.
+
+You recruit 18 people and assign each one to a course. After the courses are finished, you ask them to write an R script. You time how long it takes students to complete the task. You are interested in whether there is a significant effect of course on the time taken to complete the task.
+
+**2. Memory dataset**
+
+You are a developmental psychologist. You are interested in whether working memory develops between 15 and 17 years of age.
+
+You recruit a sample of adolescents and test them on a working memory task when they are 15 years of age, 16 years of age, and 17 years of age. 
+
+You then examine whether there is a significant effect of age on working memory score.
+
+### Model script
+
+Here is a [model script](files/Week_17/Week_17_Lab_Model_Script.Rmd) that produces the answers to the above research questions. I use the word 'model' loosely, as you may have used different functions you've learned over the last two years (and that's absolutely fine!). So don't worry if you haven't used the exact same functions as me. You should end up with the same results and interpretation at the end though.
+
+## Independent learning:
+
+This is optional, but recommended. The answers are found below.
+
+### Activity 1
+
+**Understanding how the non-parametric tests differ and when to use them**
+
+It is really important that you understand which statistical test you should run in different situations. This activity will test your knowledge of the statistical tests you learned during this lecture and {#wilcoxon-rank-sum-signed-rank}.
+
+In each of the following scenario, you are interested in whether the type of chocolate eaten affects feelings of contentment (response = 0-100). For each scenario, think about the following questions:
+
+**Scenario 1: You recruit 20 participants. On day 1, they eat milk chocolate. On day 2, they eat dark chocolate. On day 3, they eat white chocolate.**
+
+a) How would you check whether the assumption of normality is violated for this design?
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+**Scenario 2: You recruit 12 participants and randomly assign them to either a “white chocolate”, “milk chocolate”, or “dark chocolate” group.**
+
+a) How would you check whether the assumption of normality is violated for this design?
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+**Scenario 3: You recruit 7 participants. On day 1, they eat milk chocolate and on day 2, they eat dark chocolate.**
+
+a) How would you check whether the assumption of normality is violated for this design?
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+**Scenario 4: You recruit 10 participants and randomly assign them to either a “white chocolate” or “milk chocolate” group.**
+
+a) How would you check whether the assumption of normality is violated for this design?
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+### Activity 2
+
+**Interpreting R output**
+
+Interpret the following R output. Part 1 uses an independent groups design, whilst part 2 uses a repeated measures design.
+
+#### Part 1: An independent groups design
+
+You are a developmental researcher interested in whether the books children are exposed to affects their language production (how many words they can say). You recruit 21 2-year-old children and assign them to one of three groups – “Pinocchio”, “Cinderella”, and “Gruffalo”. The children’s parents then read this story every day for three months (i.e. children in the “Gruffalo” group read the Gruffalo every day). You then ask their parents to complete a language production assessment on their child (score = 0-100). 
+
+##### Testing the assumption of normality:
+
+###### Group 1: 
+```{r echo = FALSE}
+data <- read.csv("files/Week_17/l7_worksheet1.csv")
+
+Pinocchio <- data %>% filter(Book == "Pinocchio")
+
+qqnorm(Pinocchio$Words)
+qqline(Pinocchio$Words, col = "steelblue")
+
+shapiro.test(Pinocchio$Words)
+```
+
+###### Group 2: 
+```{r echo = FALSE}
+Cinderella <- data %>% filter(Book == "Cinderella")
+
+qqnorm(Cinderella$Words)
+qqline(Cinderella$Words, col = "steelblue")
+
+shapiro.test(Cinderella$Words)
+```
+
+###### Group 3: 
+```{r echo = FALSE}
+Gruffalo <- data %>% filter(Book == "Gruffalo")
+
+qqnorm(Gruffalo$Words)
+qqline(Gruffalo$Words, col = "steelblue")
+
+shapiro.test(Gruffalo$Words)
+```
+
+Is the assumption violated?
+
+##### Interpret the descriptive statistics and the model output
+
+```{r echo = FALSE}
+data %>%
+  group_by(Book) %>%
+  summarise(med_words = median(Words),
+            min_words = min(Words),
+            max_words = max(Words))
+
+model1 <- kruskal.test(Words ~ Book, data = data)
+model1
+
+dunnTest(Words~Book,data=data, method = "holm")
+```
+
+What can we conclude? Report in APA format.
+
+#### Part 2: A repeated measures design
+
+You are a researcher interested in whether the number of hours sleep individuals get affects their performance on an attention task (score = 0-100). You recruit nine participants, with all participants taking part in three conditions. In the first condition, participants get 6 hours sleep the night before (6 hours). In the second condition, they get 8 hours sleep the night before (8 hours), and in the third condition, they get 10 hours sleep the night before (10 hours).
+
+##### Testing the assumption of normality:
+
+6 hours condition:
+
+```{r echo = FALSE}
+sleep_data <- read.csv("files/Week_17/l7_worksheet2.csv")
+qqnorm(sleep_data$six_hours)
+qqline(sleep_data$six_hours, col = "steelblue")
+
+shapiro.test(sleep_data$six_hours)
+```
+
+8 hours condition:
+
+```{r echo = FALSE}
+qqnorm(sleep_data$eight_hours)
+qqline(sleep_data$eight_hours, col = "steelblue")
+
+shapiro.test(sleep_data$eight_hours)
+```
+
+10 hours condition:
+
+```{r echo = FALSE}
+qqnorm(sleep_data$ten_hours)
+qqline(sleep_data$ten_hours, col = "steelblue")
+
+shapiro.test(sleep_data$ten_hours)
+```
+
+Is the assumption violated?
+
+##### Interpret the descriptive statistics and the model output
+
+```{r echo = FALSE}
+sleep_data_reduced <- sleep_data %>% select(-Participant)
+
+sleep_data_long <- gather(sleep_data, Condition, Score, six_hours:ten_hours) # coverts the data to long format
+sleep_data_long
+
+model2 <- friedman.test(as.matrix(sleep_data_reduced)) # remember this needs to be loaded in as a matrix
+model2
+
+frdAllPairsConoverTest(sleep_data_long$Score, sleep_data_long$Condition, sleep_data_long$Participant, p.adjust = "holm")
+
+sleep_data %>%
+  summarise(med_six_hours = median(six_hours), med_eight_hours = median(eight_hours), med_ten_hours = median(ten_hours), 
+            min_six_hours = min(six_hours), min_eight_hours = min(eight_hours), min_ten_hours = min(ten_hours),
+            max_six_hours = max(six_hours), max_eight_hours = max(eight_hours), max_ten_hours = max(ten_hours))
+```
+
+What can we conclude? Report in APA format.
+
+### Activity 1: Answers
+
+**Scenario 1: You recruit 20 participants. On day 1, they eat milk chocolate. On day 2, they eat dark chocolate. On day 3, they eat white chocolate.**
+
+a) How would you check whether the assumption of normality is violated for this design? 
+
+<span style="color:purple">Assess whether the assumption of normality is violated per condition. This can be done using Q-Q plots and the Shapiro-Wilk test</span>
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+<span style="color:purple">Friedman's ANOVA</span>
+
+**Scenario 2: You recruit 12 participants and randomly assign them to either a “white chocolate”, “milk chocolate”, or “dark chocolate” group.**
+
+a) How would you check whether the assumption of normality is violated for this design? 
+
+<span style="color:purple">Assess whether the assumption of normality is violated per group. This can be done using Q-Q plots and the Shapiro-Wilk test.</span>
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+<span style="color:purple">Kruskal-Wallis test</span>
+
+**Scenario 3: You recruit 7 participants. On day 1, they eat milk chocolate and on day 2, they eat dark chocolate.**
+
+a) How would you check whether the assumption of normality is violated for this design? 
+
+<span style="color:purple">Calculate a difference score for each participant (Timepoint 1 – Timepoint 2). Assess whether the assumption of normality is violated for the “difference". This can be done using Q-Q plots and the Shapiro-Wilk test.</span>
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+<span style="color:purple">Wilcoxon signed-rank test</span>
+
+**Scenario 4: You recruit 10 participants and randomly assign them to either a “white chocolate” or “milk chocolate” group.**
+
+a) How would you check whether the assumption of normality is violated for this design? 
+
+<span style="color:purple">Assess whether the assumption of normality is violated per group. This can be done using Q-Q plots and the Shapiro-Wilk test</span>
+
+b) If the assumption of normality is violated, which non-parametric test would you run?
+
+<span style="color:purple">Wilcoxon rank-sum test</span>
+
+### Activity 2: Answers
+
+#### Part 1: An independent groups design
+
+##### Testing the assumption of normality:
+
+###### Group 1: 
+```{r echo = FALSE}
+Pinocchio <- data %>% filter(Book == "Pinocchio")
+
+qqnorm(Pinocchio$Words)
+qqline(Pinocchio$Words, col = "steelblue")
+
+shapiro.test(Pinocchio$Words)
+```
+
+###### Group 2: 
+```{r echo = FALSE}
+Cinderella <- data %>% filter(Book == "Cinderella")
+
+qqnorm(Cinderella$Words)
+qqline(Cinderella$Words, col = "steelblue")
+
+shapiro.test(Cinderella$Words)
+```
+
+###### Group 3: 
+```{r echo = FALSE}
+Gruffalo <- data %>% filter(Book == "Gruffalo")
+
+qqnorm(Gruffalo$Words)
+qqline(Gruffalo$Words, col = "steelblue")
+
+shapiro.test(Gruffalo$Words)
+```
+
+**Is the assumption violated?**
+
+<span style="color:purple">The Q-Q plot and the Shapiro-Wilk test suggests that the assumption of normality is violated for the Pinocchio group. Data in the Cinderella and Gruffalo group does not appear to violate the assumption.</span>
+
+##### Interpret the descriptive statistics and the model output
+
+```{r echo = FALSE}
+data %>%
+  group_by(Book) %>%
+  summarise(med_words = median(Words),
+            min_words = min(Words),
+            max_words = max(Words))
+
+model1 <- kruskal.test(Words ~ Book, data = data)
+model1
+
+dunnTest(Words~Book,data=data, method = "holm")
+```
+
+**What can we conclude? Report in APA format.**
+
+<span style="color:purple">The Kruskal-Wallis test revealed a significant effect of book on the language production score, *H*(2) = 17.85, *p* < .001. Post-hoc comparisons were conducted using Dunn’s test, with p-values corrected using Bonferroni-Holm. There was a significant difference between the Cinderella (median = 16; range = 12-18) and the Gruffalo groups (median = 67; range = 61-69), with participants in the Gruffalo group achieving a significantly higher score (*p* < .001). Participants in the Gruffalo group also achieved a significantly higher score than participants in the Pinocchio group (median = 25; range = 21-58; *p* = .035). No significant difference was observed between the Cinderella and the Pinocchio groups (*p* = .069).</span>
+
+#### Part 2: A repeated measures design
+
+##### Testing the assumption of normality:
+
+6 hours condition:
+
+```{r echo = FALSE}
+qqnorm(sleep_data$six_hours)
+qqline(sleep_data$six_hours, col = "steelblue")
+
+shapiro.test(sleep_data$six_hours)
+```
+
+8 hours condition:
+
+```{r echo = FALSE}
+qqnorm(sleep_data$eight_hours)
+qqline(sleep_data$eight_hours, col = "steelblue")
+
+shapiro.test(sleep_data$eight_hours)
+```
+
+10 hours condition:
+
+```{r echo = FALSE}
+qqnorm(sleep_data$ten_hours)
+qqline(sleep_data$ten_hours, col = "steelblue")
+
+shapiro.test(sleep_data$ten_hours)
+```
+
+**Is the assumption violated?**
+
+<span style="color:purple">Data in the 6 hour condition appears to violate the assumption of normality.</span>
+
+##### Interpret the descriptive statistics and the model output
+
+```{r echo = FALSE}
+sleep_data_reduced <- sleep_data %>% select(-Participant)
+
+sleep_data_long <- gather(sleep_data, Condition, Score, six_hours:ten_hours) # coverts the data to long format
+
+model2 <- friedman.test(as.matrix(sleep_data_reduced)) # remember this needs to be loaded in as a matrix
+model2
+
+frdAllPairsConoverTest(sleep_data_long$Score, sleep_data_long$Condition, sleep_data_long$Participant, p.adjust = "holm")
+
+sleep_data %>%
+  summarise(med_six_hours = median(six_hours), med_eight_hours = median(eight_hours), med_ten_hours = median(ten_hours), 
+            min_six_hours = min(six_hours), min_eight_hours = min(eight_hours), min_ten_hours = min(ten_hours),
+            max_six_hours = max(six_hours), max_eight_hours = max(eight_hours), max_ten_hours = max(ten_hours))
+```
+
+**What can we conclude? Report in APA format.**
+
+<span style="color:purple">A Friedman’s ANOVA revealed a significantly effect of sleep hours on the attention score, $x^{2}_{F}$(2) = 13.56, *p* = .001. Post-hoc comparisons were then conducting using the Conover test, with p-values corrected using Bonferroni-Holm. A significant difference emerged between the 6 hour (median = 54; range = 46-89) and the 10 hour conditions (median = 95; range = 91-99; *p* =.014), with participants performing better in the 10 hour condition. There was also a significant difference between the 8 hour (median = 73; range = 66-81) and the 10 hour conditions (*p* = .015). No significant difference emerged between the 6 hour and 8 hour conditions (*p* = .817).</span>

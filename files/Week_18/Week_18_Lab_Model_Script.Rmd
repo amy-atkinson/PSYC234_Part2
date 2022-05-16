@@ -1,0 +1,153 @@
+---
+title: "Week 18 lab - Model script"
+author: "Amy Atkinson"
+date: "02/03/2022"
+output: html_document
+---
+
+## Binary logistic regression (with one categorical predictor)
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse) 
+library(DescTools)
+```
+
+### Read in the data
+
+This chunk reads in the data.
+
+```{r}
+reptile_data <- read.csv("reptile_data.csv")
+```
+
+### Prepare the data for analysis
+
+#### Preparing our outcome variable:
+
+Check the outcome is a numeric variable.
+
+```{r}
+str(reptile_data$Reptile)
+```
+
+Outcome is a character. Create a numeric variable and check the structure of this new variable:
+
+```{r}
+reptile_data$Reptile_numeric <- recode(reptile_data$Reptile, "N" = 0, "Y"= 1) 
+str(reptile_data$Reptile_numeric)
+```
+
+Now let's view the data to see if this has worked well:
+
+```{r}
+view(reptile_data)
+```
+
+This chunk of code has worked well - "Reptile_numeric" equals 1 when "Reptile" equals "Y", and "Reptile_numeric"equals 0 when "Reptile" equals "N".
+
+#### Preparing our predictor variable:
+
+I want Country to be a factor with UK as the reference category. I therefore need country to be a factor with "UK" set as the first factor level. This chunk of code checks whether Country is a factor, and checks the order of the factor levels:
+
+```{r}
+str(reptile_data$Country)
+```
+
+County is a character. The folliwng chunk of code sets Country as factor and makes UK the first factor level. It then runs the "str" function again to checks this has worked well:
+
+```{r}
+reptile_data$Country <- factor(reptile_data$Country, c("UK", "Australia"))
+str(reptile_data$Country)
+```
+
+Country is a factor, with UK is the first factor level. This will therefore be my reference category.
+
+To double check this is true, we can also check using the constrasts function:
+
+```{r}
+contrasts(reptile_data$Country)
+```
+
+This confirms that UK will be our reference category.
+
+#### Exploring the data:
+
+```{r}
+table(reptile_data$Country, reptile_data$Reptile_numeric)
+```
+
+From this, we can see that most people in the UK don't own a reptile. Whereas more than 50% of people in Australia do. 
+
+We can also use this table to check for complete separation or quasi-complete separation - we have no cells with 0 so there's no evidence of complete separation or quasi-complete separation.
+
+#### Running the analysis:
+
+The following code runs the model and produces a summary of the output:
+
+```{r}
+country_model <- glm(Reptile_numeric ~ Country, data = reptile_data, family=binomial())
+
+summary(country_model)
+
+```
+
+#### Evaluating the model:
+
+#### Assessing the fit of the model:
+
+This chunk of code produces the model chi square, the degrees of freedom and the p-value:
+
+```{r}
+country_model_chi <- country_model$null.deviance - country_model$deviance # produces model chi square
+country_model_chi_df <- country_model$df.null - country_model$df.residual # produces model degrees of freedom
+model_p <- 1 - pchisq(country_model_chi, country_model_chi_df) # produces model p-value
+
+
+country_model_chi # chi square
+country_model_chi_df # degrees of freedom
+model_p # p-value
+```
+
+This indicates that adding country to our model significantly improved the fit, compared to the null model containing intercept only (X2(1) = 5.49, p = .019).
+
+#### Producing Pseudo R2s
+
+```{r}
+PseudoR2(country_model, which = "all")
+```
+
+McFadden Pseudo R2 = 0.12
+CoxSnell Pseudo R2 = 0.15
+Nagelkerke Pseudo R2 = 0.20
+
+#### Evaluating the individual predictors:
+
+#### Odds ratios:
+
+```{r}
+country_model_exponentiated <- exp(country_model$coefficients)
+country_model_exponentiated
+```
+
+The odds of owning a reptile are higher for individuals who live in Australia relative to individuals who live in the UK (odds ratio = 5.63).
+
+#### Confidence intervals around the odds ratio:
+
+```{r}
+country_model_odds_confidence_intervals <- exp(confint(country_model))
+country_model_odds_confidence_intervals
+```
+
+The true odds ratio in the population is likely to be somewhere between 1.32 and 28.26. As the confidence intervals doesn't cross 1, the p-value for CountryAustralia is significant. This can be confirmed by examining the output of summary(country_model) above, in which the p-value is .025.
+
+#### Predicted probabilities
+
+```{r}
+reptile_data$pred_prob <- fitted(country_model)
+reptile_data$pred_prob
+```
+
+### Overall interpretation of our model:
+
+A binary logistic regression was conducted to examine whether country (UK/Australia) significantly predicted reptile ownership (yes/no). UK was set as the reference category for the country variable. The model predicted reptile ownership significantly better than the intercept-only model (X2(1) = 5.49, p = .019; McFadden Pseudo R2 = 0.12, CoxSnell Pseudo R2 = 0.15, Nagelkerke Pseudo R2 = 0.20). Individuals who live in Australia had significantly higher odds of owning a reptile relative to individuals who live in the UK (Odds ratio = 5.63, 95% confidence interval = 1.32-28.26, p = .025).

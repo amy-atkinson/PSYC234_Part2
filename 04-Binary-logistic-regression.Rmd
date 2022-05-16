@@ -1,0 +1,359 @@
+# Lecture 8 (Binary logistic regression) {#binary-log-regression}
+
+```{r , include=FALSE}
+library(tidyverse) 
+library(DescTools)
+```
+## Lecture
+
+This lecture comprises four parts:
+
+**Part 1: Why do I need to worry about binary logistic regression?**
+
+Part 1 covers why it is important to understand binary logistic regression, and why it is not appropriate to run a linear regression model when the outcome is continuous. It also covers an introduction to binary logistic regression. The lecture recording is available [here](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=1877ca30-bcf3-4e6a-ba98-ae4b015f5fef) and the slides are available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853).
+
+**Part 2: Odds and odds ratios**
+
+Part 2 introduces the concept of odds and odds ratios, and provides an example of how to calculate odds ratios manually (to aid in understanding about what odds and odds ratios represents). The lecture recording is available [here](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=b6705542-da23-4250-9a63-ae4b015f5f26) and the slides are available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853).
+
+**Part 3: Assumptions of binary logistic regression with one categorical predictor**
+
+Part 3 covers the assumptions of binary logistic regression when you have one categorical predictor. The lecture recording is available [here](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=9a0086de-0560-47e8-a00a-ae4b015f5e9c) and the slides are available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853).
+
+**Part 4: Running a binary logistic regression model (with one categorical predictor) in R**
+
+Part 4 covers how to run a binary logistic regression model with one categorical predictor in R, and how to interpret the output. The lecture recording is available [here](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=15685413-28a2-454b-8d2e-ae4b015f5e2f) and the slides are available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785853).
+
+## Pre-lab work
+
+Before the lab, please watch the following [video](https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=843d96e8-91f6-4476-b9f0-ae4c00d8aa6f). This walks you through how to run a binary logistic regression model with one categorical predictor in R. The R markdown script covered in this video can be found [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1800879).
+
+## Lab
+
+In the lab, we'll run a binary logistic regression model with one categorical predictor in R.  Please download the following datafile: [reptile_data.csv](files/Week_18/reptile_data.csv).
+
+Use one of the following templates to ensure the packages are loaded in correctly to avoid conflicts: [R Markdown](files/Week_18/Week_18_RMarkdown_template.Rmd) and [R](files/week_18/Week_18_R_template.R).
+
+The datasets relate to the following research question:
+
+You are interested in whether the country an individual lives (UK/Australia) predicts reptile ownership (Yes/No). 
+
+In the dataset, the outcome variable (reptile) is coded as “Y” and “N” (where Y = Yes and N = No)
+
+To make sure we should all end up with the same output, set UK as your reference category for the "Country" variable.
+
+1. Work through the following steps:
+
+2. Prepare our data for analysis
+
+3. Explore our data
+
+4. Run the binary logistic regression model
+
+5. Evaluate the model
+
+6. Evaluate the individual predictors
+
+7. Predicted probabilities
+
+8. Interpret the output
+
+### Model script
+
+Here is a [model script](files/Week_18/Week_18_Lab_Model_Script.Rmd) that produces the answers to the above research question. I use the word 'model' loosely, as you may have used different functions you've learned over the last two years (and that's absolutely fine!). So don't worry if you haven't used the exact same functions as me. You should end up with the same results and interpretation at the end though.
+
+### Feedback on scripts
+
+Feedback on R scripts submitted by students is available [here](https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785828).
+
+## Independent learning
+
+This is optional, but recommended. The answers are found below.
+
+### Activity 1
+
+**Calculating odds ratios manually**
+
+Activity 1 will involve work with the following data. You are a researcher interested in whether being excited (yes/no) predicts whether an individual passes their driving test (yes/no). Here is a table of frequencies.
+
+```{r echo = FALSE} 
+l8_w1 <- read.csv("files/Week_18/l8_worksheet1.csv")
+l8_w1_table <- table(l8_w1$Passed, l8_w1$Excited)
+colnames(l8_w1_table) = c("Excited - No", "Excited - Yes")
+rownames(l8_w1_table) = c("Passed - No", "Passed - Yes") 
+
+l8_w1_table
+```
+
+**What are the odds of passing the driving test in the “Excited – Yes” group?**
+
+**What are the odds of passing the driving test in the “Excited – No” group?**
+
+**What is the odds ratio (where “Excited – No” is the original odds)?**
+ 
+**What does this odds ratio mean?**
+
+**Is there evidence of quasi-complete separation or complete separation here? Give a reason for your answer.**
+
+### Activity 2
+
+**Interpreting R output**
+
+Activity 2 examines the following research question. You are a researcher interested in whether being rich (yes/no) predicts whether an individual owns a Tesla. Here is a table of frequencies:
+
+```{r echo = FALSE} 
+l8_w2 <- read.csv("files/Week_18/l8_worksheet2.csv")
+l8_w2_table <- table(l8_w2$Rich, l8_w2$Tesla)
+colnames(l8_w2_table) = c("Tesla - Yes", "Tesla - No")
+rownames(l8_w2_table) = c("Rich - No", "Rich - Yes") 
+
+l8_w2_table
+```
+
+You analyse this data in R and the output of your model is below. For the outcome, you set “0” as “Has a Tesla – No” and “1” as “Has a Tesla – Yes” 
+
+#### Model output
+
+Here is the model output:
+
+```{r}
+l8_w2$tesla_numeric <- recode(l8_w2$Tesla, "No" = 0, "Yes"= 1) 
+tesla_model <- glm(tesla_numeric ~ Rich, data = l8_w2, family=binomial())
+summary(tesla_model)
+```
+
+#### Evaluating the model output
+
+You run some code to produce the model’s chi-square statistic, the degrees of freedom and the p-value. These are displayed below:
+
+Chi square = 8.2
+Degrees of freedom = 1
+P-value = 0.004
+
+**What do these values indicate?**
+
+#### Evaluating Pseudo R2
+
+```{r}
+PseudoR2(tesla_model, which = "all")
+```
+
+**Which Pseudo R2 values might you report (based on the lecture)?**
+
+**What is the value of these Pseudo R2s?**
+
+#### Evaluating the individual predictors
+
+Looking back at the summary output, consider the following questions:
+
+**What is the reference category for the predictor “Rich”?**
+
+**What does the Intercept Estimate represent?**
+
+**What does the RichYes Estimate represent?**
+
+##### Exponentiating the estimates:
+
+```{r}
+tesla_model_exponentiated <- exp(tesla_model$coefficients)
+tesla_model_exponentiated
+```
+
+**What does the Intercept represent?**
+
+**What does the RichYes value represent?**
+
+**Can you interpret the  RichYes value?**
+
+##### Confidence intervals:
+
+```{r}
+tesla_model_odds_confidence_intervals <- exp(confint(tesla_model))
+tesla_model_odds_confidence_intervals
+```
+
+**What does the RichYes 95% confidence intervals represent?**
+
+**From the p-value in the summary table for the RichYes row, what can you conclude?**
+
+**Is there another output we could look at to reach the same broad conclusion (regarding whether the predictor significantly predicts the outcome)?**
+
+### Activity 1: Answers
+
+**Calculating odds ratios manually**
+
+```{r echo = FALSE} 
+l8_w1 <- read.csv("files/Week_18/l8_worksheet1.csv")
+l8_w1_table <- table(l8_w1$Passed, l8_w1$Excited)
+colnames(l8_w1_table) = c("Excited - No", "Excited - Yes")
+rownames(l8_w1_table) = c("Passed - No", "Passed - Yes") 
+
+l8_w1_table
+```
+
+**What are the odds of passing the driving test in the “Excited – Yes” group?**
+
+<span style="color:purple">The probability of individuals who are excited (Excited – Yes) passing the driving test:</span>
+
+<span style="color:purple">14/26 = 0.5384615385</span>
+
+<span style="color:purple">14 is the number of participants who were excited and passed the driving test. </span>
+
+<span style="color:purple">26 is the total number of individuals who responded “Excited – Yes” (14+12)</span>
+
+<span style="color:purple">The probability of individuals who are excited (Excited – Yes) not passing the driving test: </span>
+
+<span style="color:purple">12/26 = 0.4615384615</span>
+
+<span style="color:purple">12 is the number of participants who were excited and did not pass the driving test.</span> 
+
+<span style="color:purple">26 is the total number of individuals who responded “Excited – Yes” (14+12)</span>
+
+<span style="color:purple">The odds of individuals who are excited passing the driving test:</span>
+
+<span style="color:purple">0.5384615385 / 0.4615384615 = 1.1666666668</span>
+
+**What are the odds of passing the driving test in the “Excited – No” group?**
+
+<span style="color:purple">The probability of individuals who are not excited (Excited – No) passing the driving test:</span>
+
+<span style="color:purple">8/37 = 0.216216216</span>
+
+<span style="color:purple">8 is the number of participants who were not excited and passed the driving test. </span>
+
+<span style="color:purple">37 is the total number of individuals who responded “Excited – No” (8+29)</span>
+
+<span style="color:purple">The probability of individuals who are excited (Excited - No) not passing the driving test: </span>
+
+<span style="color:purple">29/37 = 0.783783783</span>
+
+<span style="color:purple">29 is the number of participants who were not excited and did not pass the driving test. </span>
+
+<span style="color:purple">37 is the total number of individuals who responded “Excited – No” (8+29)</span>
+
+<span style="color:purple">The odds of individuals who are not excited passing the driving test:</span>
+
+<span style="color:purple">0.216216216 / 0.783783783 = 0.275862069</span>
+
+**What is the odds ratio (where “Excited – No” is the original odds)?**
+
+<span style="color:purple">1.1666666668  / 0.275862069 = 4.23</span>
+
+<span style="color:purple">The odds ratio = 4.23</span>
+ 
+**What does this odds ratio mean?**
+
+<span style="color:purple">Individuals who were excited had a 4.23x higher odds of passing the driving test relative to individuals who were not excited.</span>
+
+**Is there evidence of quasi-complete separation or complete separation here? Give a reason for your answer.**
+
+<span style="color:purple">No – all cells have quite a few observations so there is no evidence of quasi-complete separation or complete separation.</span>
+
+### Activity 2: Answers
+
+Activity 2 examines the following research question. You are a researcher interested in whether being rich (yes/no) predicts whether an individual owns a Tesla. Here is a table of frequencies:
+
+```{r echo = FALSE} 
+l8_w2 <- read.csv("files/Week_18/l8_worksheet2.csv")
+l8_w2_table <- table(l8_w2$Rich, l8_w2$Tesla)
+colnames(l8_w2_table) = c("Tesla - Yes", "Tesla - No")
+rownames(l8_w2_table) = c("Rich - No", "Rich - Yes") 
+
+l8_w2_table
+```
+
+You analyse this data in R and the output of your model is below. For the outcome, you set “0” as “Has a Tesla – No” and “1” as “Has a Tesla – Yes” 
+
+#### Model output
+
+Here is the model output:
+
+```{r}
+l8_w2$tesla_numeric <- recode(l8_w2$Tesla, "No" = 0, "Yes"= 1) 
+tesla_model <- glm(tesla_numeric ~ Rich, data = l8_w2, family=binomial())
+summary(tesla_model)
+```
+
+#### Evaluating the model output
+
+You run some code to produce the model’s chi-square statistic, the degrees of freedom and the p-value. These are displayed below:
+
+Chi square = 8.2
+Degrees of freedom = 1
+P-value = 0.004
+
+**What do these values indicate?**
+
+<span style="color:purple">$x^{2}$(1) = 8.20, *p* = .004.
+
+<span style="color:purple">This indicates that adding the “Rich” variable to our model significantly improved the fit, compared to the null model containing intercept only</span>
+
+#### Evaluating Pseudo R2
+
+```{r}
+PseudoR2(tesla_model, which = "all")
+```
+
+**Which Pseudo R2 values might you report (based on the lecture)?**
+
+<span style="color:purple">McFadden, CoxSnell and Nagelkerke</span>
+
+**What is the value of these Pseudo R2s?**
+
+<span style="color:purple">McFadden = 0.19
+CoxSnell = 0.16
+Nagelkerke = 0.27</span>
+
+#### Evaluating the individual predictors
+
+Looking back at the summary output, consider the following questions:
+
+**What is the reference category for the predictor “Rich”?**
+
+<span style="color:purple">“No” is our reference category for the Rich variable</span>
+
+**What does the Intercept Estimate represent?**
+
+<span style="color:purple">The log odds of someone with a Rich value of “No” having a tesla</span>
+
+**What does the RichYes Estimate represent?**
+
+<span style="color:purple">The change in the log odds of having a tesla value of “Yes” when going from the reference category (RichNo) to RichYes</span>
+
+##### Exponentiating the estimates:
+
+```{r}
+tesla_model_exponentiated <- exp(tesla_model$coefficients)
+tesla_model_exponentiated
+```
+
+**What does the Intercept represent?**
+
+<span style="color:purple">The odds of having a tesla for individuals who are not rich</span>
+
+**What does the RichYes value represent?**
+
+<span style="color:purple">The change in odds (i.e. the odds ratio) of having a tesla (i.e. tesla = yes) when going from RichNo to RichYes</span>
+
+**Can you interprert the RichYes value?**
+
+<span style="color:purple">The odds of having a tesla are 11.33x higher if you are rich than if you are not rich</span>
+
+##### Confidence intervals:
+
+```{r}
+tesla_model_odds_confidence_intervals <- exp(confint(tesla_model))
+tesla_model_odds_confidence_intervals
+```
+
+**What does the RichYes 95% confidence intervals represent?**
+
+<span style="color:purple">The 95% confidence around the odds ratio (for the comparison between RichNo to RichYes).</span>
+
+**From the p-value in the summary table for the RichYes row, what can you conclude?**
+
+<span style="color:purple">Whether an individual is rich (yes/no) significantly predicts whether they have a tesla (yes/no; *p* = .005)</span>
+
+**Is there another output we could look at to reach the same broad conclusion (regarding whether the predictor significantly predicts the outcome)?**
+
+<span style="color:purple">Yes, you could also look at the output for the 95% confidence interval around the odds ratio. As both the lower and upper bound of the confidence interval are above 1, this indicates that the p-value would be significant - whether an individual is rich (yes/no) significantly predicts whether they have a tesla (yes/no)</span>

@@ -1,0 +1,628 @@
+# Lecture 9 (Extending binary logistic regression) {#extending-binary-regression}
+
+```{r , include=FALSE}
+library(car)
+library(DescTools) 
+library(tidyverse)
+library(MASS)
+library(brant)
+
+select <- dplyr::select
+```
+## Lecture
+
+This lecture extends the content taught in {#extending-binary-regression} to three new contexts: binary logistic regression with different types of predictors, multiple binary logistic regression, and proportional odds models.
+
+**Part 1: Binary logistic regression with different types of predictors**
+
+This part of the lecture covers binary logistic regression with one categorical predictor with three or more levels and binary logistic regression with one continuous predictor.
+
+Lecture recording:
+
+Slides: 
+
+**Part 2: Multiple binary logistic regression**
+
+Part 2 covers multiple binary logistic regression: binary logistic regression with multiple predictor variables (i.e. more than one predictor). 
+
+Lecture recording:
+
+Slides: 
+
+**Part 3: Proportional odds models**
+
+Part 3 covers proportional odds models - a type of model that could be considered if the outcome is ordinal (has ordered levels).
+
+Lecture recording:
+
+Slides: 
+
+
+## Lab preparation
+
+Before the lab, please watch the following video. This walks you through how to run a proportional odds model. 
+
+Please also take a look at this R markdown file. This covers how to run a multiple binary logistic regression model and a proportional odds model:  
+
+## Lab
+
+In the lab, we'll run a multiple binary logistic regression model and a proportional odds model.  Please download the following zip file which contains two datasets: "measles_data.csv" and "academic_data.csv". 
+
+The datasets relate to the following research questions:
+
+**1. Academic dataset**
+
+You are interested in factors that predict academic achievement in mathematics. Children’s academic achievement can be rated as below expected, at expected or above expected. 
+
+The predictors you are interested in are:
+* Number if hours spent revising (continuous)
+* Likes school (Yes/no)
+* Favourite subject (Maths, English or Science)
+
+To make sure we should all end up with the same output:
+*Set the reference category for Likes school as “No”
+*Set the reference category for Favourite subject as “Maths”
+
+**2. Measles dataset**
+
+You work in a nursery. In the nursery, there has been an outbreak of measles. You are interested in factors that predict whether a child in your nursery will have measles (yes/no). 
+
+The predictors you are interested in are:
+* Number of hours spent at nursery weekly (continuous)
+* Has siblings(Yes/no)
+* Vaccinated against measles (Yes/no)
+
+For the categorical predictors:
+* Set the reference category for Siblings as “No”
+* Set the reference category for Vaccinated as “No”
+
+For the outcome (measles – yes/no):
+* Set No as 0, and Yes as 1
+
+## Lab - model script
+
+Here is a model script that produces the answers to the above research questions. I use the word 'model' loosely, as you may have used different functions you've learned over the last two years (and that's absolutely fine!). So don't worry if you haven't used the exact same functions as me. You should end up with the same results and interpretation at the end though.
+
+```{r }
+library(car)
+library(DescTools) 
+library(tidyverse)
+library(MASS)
+library(brant)
+
+
+options(scipen = 999) # shows numeric values rather than scientific notations in the output. 
+```
+
+
+### Proportional odds model:
+
+#### Read in the data
+
+This chunk reads in the data.
+
+```{r}
+academic_data <- read.csv("academic_data.csv")
+```
+
+#### Prepare the data for analysis
+
+First, let's check the structure of the data. The variables should have the following formats:
+
+* Number_hours_revising = needs to be a numeric or integer 
+* Favourite subject = Factor, with "Maths" as the first factor level (so all other subjects are compared to maths)
+* Likes school = Factor, with "No" as the first factor level (so the odds ratio will tell you the odds when going from does not like school to likes school)
+* Academic_performance = needs to be an ordered factor, equal to Below < Expected < Above 
+
+```{r}
+str(academic_data)
+```
+
+Number_hours_revising is as we need it. We need to change the favourite subject variable and likes school variable to factors (where "Maths" is the first factor level of favourite subject and "No" is the first factor level of Likes school. The struture of academic performance so that this is an on ordered factor. 
+
+```{r}
+academic_data$Favourite_subject <- factor(academic_data$Favourite_subject, c("Maths", "English", "Science"))
+academic_data$Likes_school <- factor(academic_data$Likes_school, c("No", "Yes"))
+academic_data$Academic_performance <- ordered(academic_data$Academic_performance,levels = c("Below", "Expected", "Above"))
+```
+
+Now let's check the structure of our dataframe again:
+
+```{r}
+str(academic_data)
+```
+
+All of the variables are now in the correct format.
+
+To double check this, we can produce contrasts for categorical predictors. If "Maths" is the reference category of Favourite_subject, we should expect all values on the "Maths" row to be 0. 
+
+```{r}
+contrasts(academic_data$Favourite_subject)
+```
+
+"Maths" is our reference category. Let's now repeat this for the Likes_school variable. If "No" is the first factor level for Likes_school, we should expect No to have 0 a next to it. 
+
+```{r}
+contrasts(academic_data$Likes_school)
+```
+
+No will be the reference category for Likes_school. 
+
+We only check contrasts for categorical predictors (to check which level will be our reference category), so we don't need to do this for Number_hours_revising, as this variable is continuous.
+
+##### Exploring the data:
+
+When we have categorical predictors, we can produce a table to look at the number of participants who have combinination of predictor level and each outcome. This allow us to understand the data and look for evidence of quasi-complete separation or complete separation. 
+
+##### Favourite subject:
+
+```{r}
+table(academic_data$Favourite_subject, academic_data$Academic_performance)
+```
+
+No evidence of separation issues.
+
+##### Likes school:
+
+```{r}
+table(academic_data$Likes_school, academic_data$Academic_performance)
+```
+
+No evidence of separation issues.
+
+We can look for separation issues for our continuous variable by looking to see whether there are any error messages when we run the model, and by looking at whether the standard errors are very large.
+
+##### Running the analysis:
+
+The following code runs the model and produces a summary of the output:
+
+```{r}
+academic_model <- polr(formula = Academic_performance ~ Favourite_subject + Number_hours_revising + Likes_school, data = academic_data, Hess = TRUE)
+
+summary(academic_model)
+```
+
+No warning messages, suggesting we don't have quasi-complete separation or complete separation. The estimates and standard errors are also quite low, so this is further evidence of no separation issues.
+
+As we can see from this output, there are no-p-values. The following chunk of code calculates the p-values and binds them with the information about the individual predictors above. 
+
+```{r}
+coefficients <- summary(academic_model)$coefficients
+
+p_value <- (1 - pnorm(abs(coefficients[ ,"t value"]), 0, 1))*2
+
+coefficients_with_p <- cbind(coefficients, p_value)
+
+coefficients_with_p
+```
+
+##### Evaluating the model:
+
+##### Assessing the fit of the model:
+
+This chunk of code produces an intercept-only model (a model containing only the intercept - i.e. no predictors) and compares these models.
+
+```{r}
+intercept_model <- polr(formula = Academic_performance ~ 1, data = academic_data, Hess = TRUE)
+
+anova(academic_model, intercept_model)
+```
+
+Adding the Favourite_subject, Number_hours_revising and Likes_school variables to our model significantly improved the fit, compared to the null model containing intercept only ($x^{2}(4) = 23.09, *p* < .001).
+
+##### Producing Pseudo R2s
+
+```{r}
+PseudoR2(academic_model, which = "all")
+```
+
+McFadden = 0.14
+CoxSnell = 0.25
+Nagelkerke = 0.29
+
+##### Evaluating the individual predictors:
+
+##### Odds ratios:
+
+```{r}
+academic_model_exponentiated <- exp(academic_model$coefficients)
+academic_model_exponentiated
+```
+
+- 0.43 = The change in the odds (i.e. the odds ratio) of having higher academic achievement (e.g. "above expected" vs "expected" or "below expected") when going from Favourite_subjectMaths to Favourite_subjectEnglish. The odds of having higher academic achievement is lower for individuals whose favourite subject is English relative to Maths (odds ratio = 0.43), when holding other variables constant
+
+- 0.99 = The change in the odds (i.e. the odds ratio) of having higher academic achievement (e.g. "above expected" vs "expected" or "below expected") when going from Favourite_subjectMaths to Favourite_subjectScience. The odds of having higher academic achievement is lower for individuals whose favourite subject is Science relative to Maths (odds ratio = 0.99), when holding other variables constant
+
+- 1.09 = The change in the odds (i.e. the odds ratio) of having higher academic achievement (e.g. "above expected" vs "expected" or "below expected") with a one unit increase in Number_hours_revising. A one unit increase in the number of hours revising was associated with higher odds of having higher academic achievement (odds ratio = 0.45), when holding other variables constant
+
+- 9.29 = The change in the odds (i.e. the odds ratio) of having higher academic achievement (e.g. "above expected" vs "expected" or "below expected") when going from Likes_schoolNo to Likes_schoolYes. The odds of having higher academic achievement is higher in individuals who like school than individuals who do not (odds ratio = 9.29), when holding other variables constant
+
+But are these predictors/comparisons significant?!
+
+##### Confidence intervals around odds ratios:
+
+```{r}
+academic_model_odds_confidence_intervals <- exp(confint(academic_model))
+academic_model_odds_confidence_intervals
+```
+
+The confidence interval for the Likes school row does not include 1 (both the lower and upper bound are above 1). This means these comparison should be significant if we look at the model output. The 95% odds ratio confidence interval for the other rows do cross 1, indicating that these comparisons should not be significant. Looking back at the p-values we calculated confirms this. 
+
+##### Predicted probabilities:
+
+```{r}
+pred_probs <- fitted(academic_model)
+academic_pred_probs <- cbind(academic_data, pred_probs)
+```
+
+##### Checking assumptions:
+
+###### Linearity of the logit:
+
+The following code produces a new variable in the dataframe called "log_Number_hours_revising_int", equal to log of hours free time multiplied by hours free time. A model is then run including all of the original variables plus the new log_Number_hours_revising_int variable. If log_Number_hours_revising_int is significant, the assumption of the linearity of the logit has been violated. We should not interpret the other variables in this model!
+
+```{r}
+academic_data$log_Number_hours_revising_int <- log(academic_data$Number_hours_revising)*academic_data$Number_hours_revising
+
+model2 <- polr(formula = Academic_performance ~ Number_hours_revising + Likes_school + Favourite_subject + log_Number_hours_revising_int, data = academic_data, Hess = TRUE)
+
+summary(model2)
+```
+
+Produce p-values: 
+
+```{r}
+coefficients_model2 <- summary(model2)$coefficients
+
+p_value_model2 <- (1 - pnorm(abs(coefficients_model2[ ,"t value"]), 0, 1))*2
+
+coefficients_model2_plus_p <- cbind(coefficients_model2, p_value_model2)
+
+coefficients_model2_plus_p
+```
+
+log_Number_hours_revising_int is not significant (p = .302) - the assumption has not been violated.
+
+###### Multicollinearity:
+
+```{r}
+vif(academic_model)
+```
+
+GVIF is outputted as one of our variables has three or more levels (Favourite_subject). We should interpret the rows in the last column (GVIF^(1/(2*Df))). All values are below 3.16 indicating no evidence of multicollinearity. 
+
+##### Proportional odds assumption:
+
+```{r}
+brant(academic_model)
+```
+
+None of the p-values are significant - the proportional odds assumption is not violated.
+
+#### Overall interpretation of our model:
+
+A proportional odds model was conducted to examine factors that predict academic achievement (below expected, at expected, above expected) in mathematics. The predictors considered were: Likes school (yes/no), Favourite subject (Maths, English, Science), and Number_hours_revising (continuous). The model predicted academic achievement significantly better than the intercept-only model ($x^{2}(4) = 23.09, *p* < .001; McFadden Pseudo $R^{2} = 0.14, CoxSnell Pseudo $R^{2} = 0.25, Nagelkerke Pseudo $R^{2} = 0.29). Examination of the individual predictors revealed that individuals who liked school had higher odds of having higher academic achievement relative to individuals who did not like school (odds ratio = 9.29, 95% confidence interval = 3.24-29.34, *p* < .001) when holding the other variables constant. None of the other predictors were significant.  
+
+Note in this paragraph above, I only discussed comparisons/continuous variables that were significant. You could discuss the non-significant ones in text too (this is often a matter of personal preference). If you do not discuss the non-significant ones in the paragraph, you should make sure to include them in the table of the regression output (see the example in the Lecture 8 slides)
+
+### Multiple binary logistic regression:
+
+#### Read in the data
+
+This chunk reads in the data.
+
+```{r}
+measles_data <- read.csv("measles_data.csv")
+```
+
+#### Prepare the data for analysis
+
+Before we run the binary logistic regression. We first need to check the structure of the dataframe. 
+
+The data needs to be in the following format:
+* Hours_attend = numeric or integer
+* Siblings = Factor, with "No" as the first factor level
+* Vaccinated = Factor, with "No" as the first factor level
+* Measles = numeric, with no coded as 0 and yes coded as 1
+
+```{r}
+str(measles_data)
+```
+
+Hours_attend is an integer variable. Siblings and Vaccinated are characters. These need converting to factors, with "No" set as the first factor level. Measles needs to be convered to a numeric variable.
+
+```{r}
+measles_data$Siblings <- factor(measles_data$Siblings, c("No", "Yes"))
+measles_data$Vaccinated <- factor(measles_data$Vaccinated, c("No", "Yes"))
+measles_data$Measles_numeric <- recode(measles_data$Measles, "No" = 0, "Yes"= 1) 
+```
+
+Now let' check the structure of our dataframe again:
+
+```{r}
+str(measles_data)
+```
+
+We see we have a new variable "Measles_numeric" that is a numeric variable. I've also checked the dataframe to confirm that this has worked properly (i.e. that "Measles_numeric" equals 1 when "Measles" equals "Yes", and "Measles_no" should equals 0 when "Measles" equals "No". 
+
+##### Confirming by checking contrasts:
+
+To confirm that No will be my reference category for Siblings and Vaccinated, I can check the contrasts.
+
+```{r}
+contrasts(measles_data$Siblings)
+```
+
+```{r}
+contrasts(measles_data$Vaccinated)
+```
+
+This confirms that no will be the reference category for both Siblings and Vaccinated.
+
+##### Exploring the data:
+
+When we have categorical predictors, we can produce a table to look at the number of participants who have each predictor level and each outcome. This can allow us to understand the data a little better, and also allows us to check for quasi-complete separation or complete separation. 
+
+##### Siblings:
+
+```{r}
+table(measles_data$Siblings, measles_data$Measles_numeric)
+```
+
+We have no evidence of complete separation or quasi-complete separation for Siblings.
+
+##### Vaccinated:
+
+```{r}
+table(measles_data$Vaccinated, measles_data$Measles_numeric)
+```
+
+No evidence of complete separation or quasi-complete separation for Vaccinated.
+
+##### Running the analysis:
+
+The following code runs the model and produces a summary of the output:
+
+```{r}
+measles_mod <- glm(Measles_numeric ~ Hours_attend + Siblings + Vaccinated, data = measles_data, family=binomial())
+
+summary(measles_mod)
+
+```
+
+No convergence issues or other warning messages. Standard errors are not very large, suggesting there are no separation issues for the hours_attend variable.
+
+Before we evaluate the individual predictors, let's assess the overall fit of the model
+
+##### Evaluating the model:
+
+##### Assessing the fit of the model:
+This chunk of code produces the model chi square, the degrees of freedom and the p-value:
+
+```{r}
+measles_model_chi <- measles_mod$null.deviance - measles_mod$deviance # produces model chi square
+measles_model_chi_df <- measles_mod$df.null - measles_mod$df.residual # produces model degrees of freedom
+measles_model_p <- 1 - pchisq(measles_model_chi, measles_model_chi_df) # produces model p-value
+
+measles_model_chi # chi square
+measles_model_chi_df # degrees of freedom
+measles_model_p # p-value
+```
+
+Adding the hours attended, siblings and vaccinated variables to the model significantly improved the fit, compared to the null model containing intercept only ($x^{2}(3) = 19.03, *p* < .001).
+
+##### Producing Pseudo R2s
+
+```{r}
+PseudoR2(measles_mod, which = "all")
+```
+
+McFadden = 0.29
+CoxSnell = 0.27
+Nagelkerke = 0.41
+
+##### Evaluating the individual predictors:
+
+##### Odds ratios:
+
+```{r}
+measles_mod_exponentiated <- exp(measles_mod$coefficients)
+measles_mod_exponentiated
+```
+
+- 1.20 = The change in the odds (i.e. the odds ratio) of having measles (i.e. measles = yes) with a one unit increase in hours attended nursery. This indicates that a one unit increase in the hours attended nursery increases the odds of having measles (odds ratio = 1.20), when holding the other variables constant
+
+- 0.66 = The change in the odds (i.e. the odds ratio) of having measles (i.e. measles = yes) when going from SiblingsNo to SiblingsYes. Individuals who has siblings had lower odds of having measles relative to individuals who did not (odds ratio = 0.66), when holding other variables constant
+
+- 0.14 = The change in the odds (i.e. the odds ratio) of having measles (i.e. measles = yes) when going from VaccinatedNo to VaccinatedYes. Individuals who had been vaccinated had lower odds of having measles relative to individuals who had not been vaccinated (odds ratio = 0.14), when holding other variables constant
+
+We need to look if these variables are significant predictors though. First, let's have a look at the confidence intervals around the odds ratios.
+
+
+##### Confidence intervals around odds ratios:
+
+```{r}
+measles_mod_odds_confidence_intervals <- exp(confint(measles_mod))
+measles_mod_odds_confidence_intervals
+```
+
+The confidence interval for the Hours_attend row and the vaccinatedYes row do not cross 1. This means these comparison should be significant if we look at the model output. Looking at the model output above confirms this: *p* for Hours_attend = .004. *p* for Vaccinated = .018.
+
+##### Predicted probabilities:
+
+```{r}
+measles_data$model_pred_probs <- fitted(measles_mod)
+```
+
+##### Checking the assumptions:
+
+###### Linearity of the logit:
+
+We need to check this for the hours attend variable.
+
+```{r}
+measles_data$log_Hours_attend_int <- log(measles_data$Hours_attend)*measles_data$Hours_attend
+
+model2 <- glm(Measles_numeric ~ Hours_attend + Siblings + Vaccinated + log_Hours_attend_int, data = measles_data, family=binomial())
+
+summary(model2)
+```
+
+log_Hours_attend_int is not significant - the assumption has not been violated.
+
+###### No multicollinearity:
+
+```{r}
+vif(measles_mod)
+```
+
+VIF values - all values are below 10 - there is no evidence of multicollinearity.
+
+#### Overall interpretation of our model:
+
+A binary logistic regression was conducted to examine factors that predict whether a child has measles (yes/no). The predictors entered into the model were: the number of hours a child attends nursery (continuous), whether they have siblings (yes/no) and whether they have been vaccinated against measles (yes/no). The model predicted measles diagnosis significantly better than the intercept-only model ($x^{2}(3) = 19.03, *p* < .001; McFadden Pseudo $R^{2} = 0.29, CoxSnell Pseudo $R^{2} = 0.27, Nagelkerke Pseudo $R^{2} = 0.41). When holding the other variables constant, individuals who were vaccinated had significantly lower odds of having measles relative to individuals who were not vaccinated (Odds ratio (OR) = 0.14; 95% confidence interval around the odds ratio = 0.02-0.69, *p* = .018). A one unit increase in the number of hours the child attended nursery increased the odds of having measles (i.e. measles = yes) (odds ratio = 1.20, 95% confidence interval around the odds ratio = 1.07-1.38; *p* = .004) when holding the other variables constant. Whether or not the child had siblings did not predict whether a child had measles (*p* = .644). 
+
+This should be accompanied by a table of the regression output, including rows for each comparison (see the example in the Lecture 8 slides)
+
+## Worksheet:
+
+The answers are in the next section.
+
+### Activity 1: Interpreting odds ratios from multiple binary logistic regression
+
+Imagine you are interested in examining factors that predict whether an individual has a dog (yes/no). The variables you are interested in are: has children (yes/no), working pattern (full-time, part-time, unemployed), and number of pets previously (continuous). You code dog into a numeric variable where 0 = No and 1 = Yes. You set “No” as the reference category for “has children” and “unemployed” as the reference category for working pattern. Below are the odds ratios and 95% confidence intervals around the odds ratio that you obtain.
+
+```{r echo=FALSE}
+variable_name <- c("Has_childrenYes", "Working_patternFull-time", "Working_patternPart-time", "Num_previous_pets")
+odds_ratio <- c(3.67, 6.85, 3.12, 0.45)
+lower_ci <- c(2.14, 1.34, 0.67, 0.23)
+upper_ci <- c(5.64, 14.67, 1.35, 0.67)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpert the odds ratios?**
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+### Activity 2: Interpreting odds ratios from a proportional odds model
+
+Imagine you are interested in examining factors that predict severity of a disease (mild, moderate or severe). The variables you are interested in are: pre-existing health condition (yes/no), smokes (yes/no), and number of units of alcohol consumed weekly (continuous). You code disease severity into an ordered factor (mild < moderate < severe). You set “No” as the reference category for “pre-existing health condition” and “smoking”. Below are the odds ratios and confidence intervals you obtain.
+
+```{r echo=FALSE}
+variable_name <- c("Pre-existing_healthYes", "SmokesYes", "Num_alcohol_units")
+odds_ratio <- c(2.31, 1.45, 1.12)
+lower_ci <- c(1.45, 0.89, 1.02)
+upper_ci <- c(4.56, 4.56, 1.45)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpret the odds ratios?**
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+## Worksheet answers
+
+### Activity 1: Interpreting odds ratios from multiple binary logistic regression
+
+```{r echo=FALSE}
+variable_name <- c("Has_childrenYes", "Working_patternFull-time", "Working_patternPart-time", "Num_previous_pets")
+odds_ratio <- c(3.67, 6.85, 3.12, 0.45)
+lower_ci <- c(2.14, 1.34, 0.67, 0.23)
+upper_ci <- c(5.64, 14.67, 1.35, 0.67)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpret the odds ratios?**
+
+You could interpret the odds ratios in two ways:
+
+**Way one:**
+
+<span style="color:purple">Individuals who had children had higher odds of having a dog relative to individuals who did not have children (odds ratio = 3.67, 95% confidence interval = 2.14-5.64) when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked full time had had higher odds of having a dog relative to individuals who were unemployed (odds ratio = 6.85, 95% confidence interval = 1.34-14.67) when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked part-time had higher odds of having a dog relative to individuals who were unemployed (odds ratio = 3.12, 95% confidence interval = 0.67-1.35) when holding other variables constant</span>
+
+<span style="color:purple">A one unit increase in the number of previous pets was associated with lower odds of currently having a dog (odds ratio = 0.45, 95% confidence interval = 0.23-0.67) when holding other variables constant</span>
+
+**Way two:**
+
+<span style="color:purple">Individuals who had children had 3.67x higher odds of having a dog relative to individuals who did not have children (95% confidence interval = 2.14-5.64), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked full time had had 6.85x higher odds of having a dog relative to individuals who were unemployed (95% confidence interval = 1.34-14.67), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who worked part-time had 3.12x higher odds of having a dog relative to individuals who were unemployed (95% confidence interval = 0.67-1.35)</span>
+
+<span style="color:purple">A one unit increase in the number of previous pets was associated with a 0.45x higher odds (i.e. lower odds) of having a dog (odds ratio = 0.45, 95% confidence interval = 0.23-0.67), when holding other variables constant</span>
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+<span style="color:purple">*	Has_childrenYes</span>
+
+<span style="color:purple">*	Working_patternFull-time</span>
+
+<span style="color:purple">*	Num_previous_pets</span>
+
+<span style="color:purple">The 95% confidence interval around the odds ratio does not cross 1 for these comparisons (i.e. both the upper and the lower bound are higher than 1 OR both the upper and the lower bound are lower than 1). For Working_patternPart-time, the 95% confidence interval crosses 1 (i.e. the lower confidence interval bound is below 1 and the higher confidence interval bound is above 1). This means when we look at the output, the p-value for Working_patternPart-time will be above 0.05 (i.e. not significant).</span>
+
+### Activity 2: Interpreting odds ratios from a proportional odds model
+
+```{r echo=FALSE}
+variable_name <- c("Pre-existing_healthYes", "SmokesYes", "Num_alcohol_units")
+odds_ratio <- c(2.31, 1.45, 1.12)
+lower_ci <- c(1.45, 0.89, 1.02)
+upper_ci <- c(4.56, 4.56, 1.45)
+l9_w1_tab <- data.frame(variable_name, odds_ratio, lower_ci, upper_ci)
+kable(l9_w1_tab, booktabs = TRUE, align=rep('c', 4), col.names = c("",
+                 "Odds ratio",
+                 "Lower confidence interval bound",
+                 "Upper confidence interval bound")) %>%
+  kable_styling(position = "center")
+  
+```
+
+**Can you interpret the odds ratios?**
+
+You can interpret the odds ratios in two ways:
+
+**Way one:**
+
+<span style="color:purple">Individuals who had a pre-existing health condition had higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not have a pre-existing health condition (odds ratio = 2.31, 95% confidence interval = 1.45-4.56), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who smoked had higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not smoke (odds ratio = 1.45, 95% confidence interval = 0.89-4.56) when holding other variables constant</span>
+
+<span style="color:purple">A one unit increase in the number of alcohol units consumed weekly increased the odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease), when holding the other variables constant (odds ratio = 1.12, 95% confidence interval = 1.02-1.45)</span>
+
+**Way two:**
+
+<span style="color:purple">Individuals who had a pre-existing health condition had 2.31x higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not have a pre-existing health condition (95% confidence interval = 1.45-4.56), when holding other variables constant</span>
+
+<span style="color:purple">Individuals who smoked had 1.45x higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not smoke (95% confidence interval = 0.89-4.56) when holding other variables constant</span>
+
+<span style="color:purple">A one unit increase in the number of alcohol units consumed weekly increased the odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) by 1.12, when holding the other variables constant (95% confidence interval = 1.02-1.45)</span>
+
+**Which rows would be significant if you looked at the p-values and why?**
+
+<span style="color:purple">*	Pre-existing_healthYes </span>
+<span style="color:purple">*	Num_alcohol_units</span>
+
+<span style="color:purple">The 95% confidence interval around the odds ratio does not cross 1 for these comparisons (i.e. both the upper and the lower bound are higher than 1 OR both the upper and the lower bound are lower than 1). For SmokesYes, the 95% confidence interval crosses 1 (i.e. the lower confidence interval bound is below 1 and the higher confidence interval bound is above 1). This means when we look at the output, the p-value for SmokesYes will be above 0.05 (i.e. not significant).</span>
