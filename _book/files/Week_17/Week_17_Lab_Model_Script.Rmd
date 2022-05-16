@@ -1,0 +1,304 @@
+---
+title: "Week 17 - Lab model script"
+author: "Amy Atkinson"
+date: "16/02/2022"
+output: html_document
+---
+
+## The Kruskal-Wallis test
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse) 
+library(cowplot)
+library(FSA)
+library(PMCMRplus)
+```
+
+### Read in the data
+
+This chunk reads in the data.
+
+```{r}
+course_data <- read.csv("course_data_set.csv")
+```
+
+### Check whether the data meets the assumption of normality
+
+Remember, we need to check if the assumption of normality is met for each group separately.
+
+#### Course 1
+
+##### Filter data:
+
+This produces a new dataset containing data for the Course 1 group only:
+
+```{r}
+course_1 <- course_data %>% filter(Group == "Course 1")
+```
+
+##### Produce a Q-Q plot:
+
+```{r}
+qqnorm(course_1$Time)
+qqline(course_1$Time, col = "steelblue")
+```
+
+Quite a few of the datapoints deviate from the line, suggesting data from this group might violates the assumption of normality.
+
+##### Shapiro-Wilk test:
+
+
+```{r}
+shapiro.test(course_1$Time)
+```
+
+This suggests that the data in the course 1 group violates the assumption of normality.
+
+#### Course 2:
+
+##### Filter data:
+
+This produces a new dataset containing data for the Course 2 group only:
+
+```{r}
+course_2 <- course_data %>% filter(Group == "Course 2")
+```
+
+##### Produce a Q-Q plot:
+
+
+```{r}
+qqnorm(course_2$Time)
+qqline(course_2$Time, col = "steelblue")
+```
+
+The points do generally follow the line, although there is some slight deviation.
+
+##### Shapiro-Wilk test:
+
+```{r}
+shapiro.test(course_2$Time)
+```
+
+The Shapiro-Wilk test is not significant, suggesting the data does not violate the assumption of normality.
+
+#### Course 3:
+
+##### Filter data:
+
+This produces a new dataset containing data for the Course 3 group only:
+
+```{r}
+course_3 <- course_data %>% filter(Group == "Course 3")
+```
+
+##### Produce a Q-Q plot:
+
+
+```{r}
+qqnorm(course_3$Time)
+qqline(course_3$Time, col = "steelblue")
+```
+
+Quite a few of the points deviate from the line. 
+
+##### Shapiro-Wilk test:
+
+```{r}
+shapiro.test(course_3$Time)
+```
+
+The Shapiro-Wilk test suggests that data in this group violates the assumption of normality.
+
+##### Interpretation:
+
+Data from the Course 1 and Course 3 groups appears to violates the assumption of normality. Data from the Course 2 group does not appear to violate the assumption. We might therefore decide to run the Kruskal-Wallis test. 
+
+### Exploring our dataset:
+
+First, let's explore the data.
+
+#### Descriptive statistics:
+
+Medians, range, and number of participants per group:
+
+```{r}
+course_data %>% 
+  group_by(Group) %>% # plots data per group
+  summarise(med = median(Time), # median  
+            min = min(Time), # lowest value
+            max = max(Time), # highest value
+            n = n()) # number of participants per group
+```
+
+Plot:
+
+```{r}
+ggplot(course_data, aes(x=Group, y=Time)) + 
+  geom_boxplot() + 
+  labs(y = "Time spent completing the task (minutes)") + 
+  theme_cowplot() 
+```
+
+The median for the Course 3 group is lowest, Course 2 is intermediate, and Course 1 is highest. There are 6 participants in each group
+
+
+### Performing the Kruskal-Wallis test:
+
+```{r}
+model1 <- kruskal.test(Time ~ Group, data = course_data)
+model1
+```
+
+From this, we can see that there is a significant difference between the groups.
+
+### Post-hoc tests:
+
+Post-hoc tests were therefore conducted to understand which groups significantly differ from each other.
+
+```{r}
+dunnTest(Time~Group,data=course_data, method = "holm")
+```
+
+Here, we can see that the difference between Course 1 and Course 3 is significant.
+
+### Interpretation:
+
+There was a significant effect of course on the amount of time required to complete the task, H(2) = 7.77, p = .020. Post-hoc comparisons were conducted using Dunn’s test. P-values were corrected using Bonferroni-Holm. There was a significant difference between Course 1 (median = 64, range = 21-70) and Course 3 (median = 8.50, range = 5-31; p = .016), with students who completed Course 3 completing the task faster. No significant difference emerged between Course 1 and Course 2 (median = 25.5, range = 15-36; p = 0.303), or Course 2 and Course 3 (p = .176).
+
+##  Friedman's ANOVA 
+
+### Read in the data
+
+This chunk reads in the data.
+
+```{r}
+memory_data <- read.csv("memory_data.csv") 
+```
+
+### Check whether the data meets the assumption of normality
+
+#### Timepoint 1 (Age 15):
+
+##### Produce a Q-Q plot:
+
+
+```{r}
+qqnorm(memory_data$Age_15)
+qqline(memory_data$Age_15, col = "steelblue")
+```
+
+Some of the points deviate quite a lot from the line. This suggests the assumption of normality may be violated. 
+
+##### Shapiro-Wilk test:
+
+```{r}
+shapiro.test(memory_data$Age_15)
+```
+
+The Shapiro-Wilk test is significant, suggesting the assumption of normality is violated.
+
+#### Timepoint 2 (Age 16):
+
+##### Produce a Q-Q plot:
+
+```{r}
+qqnorm(memory_data$Age_16)
+qqline(memory_data$Age_16, col = "steelblue")
+```
+
+The points generally follow the line well.  
+
+##### Shapiro-Wilk test:
+
+```{r}
+shapiro.test(memory_data$Age_16)
+```
+
+The Shapiro-Wilk test is non-significant and most of the points follow the line, suggesting the assumption of normality is  not violated.
+
+#### Timepoint 3 (Age 17):
+
+##### Produce a Q-Q plot:
+
+```{r}
+qqnorm(memory_data$Age_17)
+qqline(memory_data$Age_17, col = "steelblue")
+```
+
+The points deviate from the line quite a bit. 
+
+##### Shapiro-Wilk test:
+
+```{r}
+shapiro.test(memory_data$Age_17)
+```
+
+The Shapiro-Wilk test is significant, suggesting the assumption of normality may have been violated.
+
+##### Interpretation:
+
+Data from the Age_15 and Age_17 timepoints appears to violate the assumption. A Friedman's ANOVA will therefore be run. 
+
+### Exploring the data:
+
+#### Examining the descriptive statistics:
+
+Median, minimum, maximum per condition: 
+
+```{r}
+memory_data %>%
+  summarise(med_Age_15 = median(Age_15), med_Age_16 = median(Age_16), med_Age_17 = median(Age_17), 
+            min_Age_15 = min(Age_15), min_Age_16 = min(Age_16), min_Age_17 = min(Age_17),
+            max_Age_15 = max(Age_15), max_Age_16 = max(Age_16), max_Age_17 = max(Age_17),
+            n = n()) # n only need to be calculated once since each participant contributes data to all three conditions 
+```
+
+#### Data visualisation:
+
+```{r}
+memory_data_long <- gather(memory_data, Age_group, Score, Age_15:Age_17) # coverts the data to long format
+memory_data_long
+
+memory_data_long$Age_group <- recode(memory_data_long$Age_group, "Age_15" = "15 years old",   # changes the factor level names
+                                     "Age_16" = "16 year old",
+                                     "Age_17" = "17 year old") 
+```
+
+```{r}
+ggplot(memory_data_long, aes(x=Age_group, y=Score)) + 
+  geom_boxplot() + 
+  labs(y = "Working memory score", x = "Age group") + # adds a y label which makes it clearer what our outcome measure is
+  theme_cowplot() # formats the figure nicely
+```
+
+Here, we can see there is very little difference between the medians of the 15 and 16 year old groups. There is a large difference between the 15 and 17 year olds and the 16 and 17 year olds.
+
+### Performing the Friedman's ANOVA
+
+```{r}
+# creates a new dataframe containing all columns except from the "Participant" column 
+memory_data_reduced <- memory_data %>% select(-Participant) 
+```
+
+Run the model:
+
+```{r}
+model2 <- friedman.test(as.matrix(memory_data_reduced)) 
+model2
+```
+
+The p-value is equal to 0.001 (if we round to three decimal places), indicating there is a significant effect of age group. 
+
+### Post-hoc tests
+
+```{r}
+# requires PMCMRplus library
+frdAllPairsConoverTest(memory_data_long$Score, memory_data_long$Age_group, memory_data_long$Participant, p.adjust = "holm")
+```
+The post-hoc tests revealed a significant difference between the Age_15 and Age_17 timepoints, and the Age_16 and Age_17 timepoints. There is no significant difference between the Age_15 and Age_16 timepoints.
+
+### Interpretation:
+
+Friedman’s ANOVA revealed that there was a significant effect of age group on working memory score, X2F(2) = 14.00, p = .001. Post-hoc comparisons were then conducting using the Conover test. P-values were corrected using Bonferroni-Holm. There was a significant difference between performance at 15 year of age (median = 40; range = 10-48) and 17 years of age (median = 66; range = 62-87; p = 0.008), and 16 years of age (median = 42; range = 16-66) and 17 years of age (p = 0.024). Participants performed significantly better at the 17 year old timepoint relative to the 15 and 16 year old timepoint. No significant difference emerged between the 15 year old and 16 year old timepoints (p = 0.490).

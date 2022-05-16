@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Lecture 9 (Extending binary logistic regression) | PSYC234 (Weeks 15-19)</title>
+  <meta name="description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  <meta name="generator" content="bookdown 0.26 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Lecture 9 (Extending binary logistic regression) | PSYC234 (Weeks 15-19)" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  <meta name="github-repo" content="amy-atkinson/PSYC234_Part2" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Lecture 9 (Extending binary logistic regression) | PSYC234 (Weeks 15-19)" />
+  
+  <meta name="twitter:description" content="This contains all of the important documents for Dr Amy Atkinson’s part of PSYC234 (Lectures 5-9)" />
+  
+
+<meta name="author" content="Amy Atkinson" />
+
+
+<meta name="date" content="2022-05-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="binary-log-regression.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
+<li class="chapter" data-level="2" data-path="binomial_test.html"><a href="binomial_test.html"><i class="fa fa-check"></i><b>2</b> Lecture 5 (Binomial Test)</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="binomial_test.html"><a href="binomial_test.html#lecture"><i class="fa fa-check"></i><b>2.1</b> Lecture</a></li>
+<li class="chapter" data-level="2.2" data-path="binomial_test.html"><a href="binomial_test.html#pre-lab-work"><i class="fa fa-check"></i><b>2.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="2.3" data-path="binomial_test.html"><a href="binomial_test.html#lab"><i class="fa fa-check"></i><b>2.3</b> Lab</a></li>
+<li class="chapter" data-level="2.4" data-path="binomial_test.html"><a href="binomial_test.html#independent-learning"><i class="fa fa-check"></i><b>2.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="2.4.1" data-path="binomial_test.html"><a href="binomial_test.html#activity-1"><i class="fa fa-check"></i><b>2.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="2.4.2" data-path="binomial_test.html"><a href="binomial_test.html#activity-2"><i class="fa fa-check"></i><b>2.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="2.4.3" data-path="binomial_test.html"><a href="binomial_test.html#activity-1-answers"><i class="fa fa-check"></i><b>2.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="2.4.4" data-path="binomial_test.html"><a href="binomial_test.html#activity-2-answers"><i class="fa fa-check"></i><b>2.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html"><i class="fa fa-check"></i><b>3</b> Lecture 6 (Non-parametric tests: Wilcoxon rank-sum and Wilcoxon signed-rank tests)</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#lecture-1"><i class="fa fa-check"></i><b>3.1</b> Lecture</a></li>
+<li class="chapter" data-level="3.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#pre-lab-work-1"><i class="fa fa-check"></i><b>3.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="3.3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#lab-1"><i class="fa fa-check"></i><b>3.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#model-script"><i class="fa fa-check"></i><b>3.3.1</b> Model script</a></li>
+<li class="chapter" data-level="3.3.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#feedback-on-scripts"><i class="fa fa-check"></i><b>3.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="3.4" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#independent-learning-1"><i class="fa fa-check"></i><b>3.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-1-1"><i class="fa fa-check"></i><b>3.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="3.4.2" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-2-1"><i class="fa fa-check"></i><b>3.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="3.4.3" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-1-answers-1"><i class="fa fa-check"></i><b>3.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="3.4.4" data-path="wilcoxon-rank-sum-signed-rank.html"><a href="wilcoxon-rank-sum-signed-rank.html#activity-2-answers-1"><i class="fa fa-check"></i><b>3.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html"><i class="fa fa-check"></i><b>4</b> Lecture 7 (Non-parametric tests: Kruskal-Wallis test and Friedman’s ANOVA)</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#lecture-2"><i class="fa fa-check"></i><b>4.1</b> Lecture</a></li>
+<li class="chapter" data-level="4.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#pre-lab-work-2"><i class="fa fa-check"></i><b>4.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="4.3" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#lab-2"><i class="fa fa-check"></i><b>4.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#model-script-1"><i class="fa fa-check"></i><b>4.3.1</b> Model script</a></li>
+<li class="chapter" data-level="4.3.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#feedback-on-scripts-1"><i class="fa fa-check"></i><b>4.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#independent-learning-2"><i class="fa fa-check"></i><b>4.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-1-2"><i class="fa fa-check"></i><b>4.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="4.4.2" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-2-2"><i class="fa fa-check"></i><b>4.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="4.4.3" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-1-answers-2"><i class="fa fa-check"></i><b>4.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="4.4.4" data-path="kruskal-friedman.html"><a href="kruskal-friedman.html#activity-2-answers-2"><i class="fa fa-check"></i><b>4.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="binary-log-regression.html"><a href="binary-log-regression.html"><i class="fa fa-check"></i><b>5</b> Lecture 8 (Binary logistic regression)</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#lecture-3"><i class="fa fa-check"></i><b>5.1</b> Lecture</a></li>
+<li class="chapter" data-level="5.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#pre-lab-work-3"><i class="fa fa-check"></i><b>5.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="5.3" data-path="binary-log-regression.html"><a href="binary-log-regression.html#lab-3"><i class="fa fa-check"></i><b>5.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#model-script-2"><i class="fa fa-check"></i><b>5.3.1</b> Model script</a></li>
+<li class="chapter" data-level="5.3.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#feedback-on-scripts-2"><i class="fa fa-check"></i><b>5.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="binary-log-regression.html"><a href="binary-log-regression.html#independent-learning-3"><i class="fa fa-check"></i><b>5.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-1-3"><i class="fa fa-check"></i><b>5.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="5.4.2" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-2-3"><i class="fa fa-check"></i><b>5.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="5.4.3" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-1-answers-3"><i class="fa fa-check"></i><b>5.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="5.4.4" data-path="binary-log-regression.html"><a href="binary-log-regression.html#activity-2-answers-3"><i class="fa fa-check"></i><b>5.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html"><i class="fa fa-check"></i><b>6</b> Lecture 9 (Extending binary logistic regression)</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#lecture-4"><i class="fa fa-check"></i><b>6.1</b> Lecture</a></li>
+<li class="chapter" data-level="6.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#pre-lab-work-4"><i class="fa fa-check"></i><b>6.2</b> Pre-lab work</a></li>
+<li class="chapter" data-level="6.3" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#lab-4"><i class="fa fa-check"></i><b>6.3</b> Lab</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#model-script-3"><i class="fa fa-check"></i><b>6.3.1</b> Model script</a></li>
+<li class="chapter" data-level="6.3.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#feedback-on-scripts-3"><i class="fa fa-check"></i><b>6.3.2</b> Feedback on scripts</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#independent-learning-4"><i class="fa fa-check"></i><b>6.4</b> Independent learning</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-1-4"><i class="fa fa-check"></i><b>6.4.1</b> Activity 1</a></li>
+<li class="chapter" data-level="6.4.2" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-2-4"><i class="fa fa-check"></i><b>6.4.2</b> Activity 2</a></li>
+<li class="chapter" data-level="6.4.3" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-1-answers-4"><i class="fa fa-check"></i><b>6.4.3</b> Activity 1: Answers</a></li>
+<li class="chapter" data-level="6.4.4" data-path="extending-binary-regression.html"><a href="extending-binary-regression.html#activity-2-answers-4"><i class="fa fa-check"></i><b>6.4.4</b> Activity 2: Answers</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">PSYC234 (Weeks 15-19)</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="extending-binary-regression" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Lecture 9 (Extending binary logistic regression)<a href="extending-binary-regression.html#extending-binary-regression" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="lecture-4" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Lecture<a href="extending-binary-regression.html#lecture-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This lecture extends the content taught in {#extending-binary-regression} to three new contexts: binary logistic regression with different types of predictors, multiple binary logistic regression, and proportional odds models.</p>
+<p><strong>Part 1: Binary logistic regression with different types of predictors</strong></p>
+<p>This part of the lecture covers binary logistic regression with one categorical predictor with three or more levels and binary logistic regression with one continuous predictor. The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=96652a3c-c8b7-4cd8-a742-ae5300dd67db">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785870">here</a>.</p>
+<p><strong>Part 2: Multiple binary logistic regression</strong></p>
+<p>Part 2 covers multiple binary logistic regression: binary logistic regression with multiple predictor variables (i.e. more than one predictor). The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=88f1bd46-b56b-473a-b567-ae5300dd685c">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785870">here</a>.</p>
+<p><strong>Part 3: Proportional odds models</strong></p>
+<p>Part 3 covers proportional odds models - a type of model that could be considered if the outcome is ordinal (has ordered levels). The lecture recording is available <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=c75610b6-8324-47f1-beb3-ae5300e153fa">here</a> and the slides are available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785870">here</a>.</p>
+</div>
+<div id="pre-lab-work-4" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Pre-lab work<a href="extending-binary-regression.html#pre-lab-work-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Before the lab, please watch the following <a href="https://dtu-panopto.lancs.ac.uk/Panopto/Pages/Viewer.aspx?id=572ff060-5b75-4111-a016-ae54010306a1">video</a>. This walks you through how to run a proportional odds model. Please also take a look at <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1805161">this</a> R Markdown file. This covers how to run a multiple binary logistic regression model and a proportional odds model</p>
+</div>
+<div id="lab-4" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Lab<a href="extending-binary-regression.html#lab-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In the lab, we’ll run a multiple binary logistic regression model and a proportional odds model. Please download the following zip file which contains two datasets: <a href="files/Week_19/measles_data.csv">measles_data.csv</a> and <a href="files/Week_19/academic_data.csv">academic_data.csv</a>.</p>
+<p>Use one of the following templates to ensure the packages are loaded in correctly to avoid conflicts: <a href="files/Week_19/Week_19_RMarkdown_template.Rmd">R Markdown</a> and <a href="files/Week_19/Week_19_R_template.R">R</a>.</p>
+<p>The datasets relate to the following research questions:</p>
+<p><strong>1. Academic dataset</strong></p>
+<p>You are interested in factors that predict academic achievement in mathematics. Children’s academic achievement can be rated as below expected, at expected or above expected.</p>
+<p>The predictors you are interested in are:
+* Number if hours spent revising (continuous)
+* Likes school (Yes/no)
+* Favourite subject (Maths, English or Science)</p>
+<p>To make sure we should all end up with the same output:
+<em>Set the reference category for Likes school as “No”
+</em>Set the reference category for Favourite subject as “Maths”</p>
+<p><strong>2. Measles dataset</strong></p>
+<p>You work in a nursery. In the nursery, there has been an outbreak of measles. You are interested in factors that predict whether a child in your nursery will have measles (yes/no).</p>
+<p>The predictors you are interested in are:
+* Number of hours spent at nursery weekly (continuous)
+* Has siblings(Yes/no)
+* Vaccinated against measles (Yes/no)</p>
+<p>For the categorical predictors:
+* Set the reference category for Siblings as “No”
+* Set the reference category for Vaccinated as “No”</p>
+<p>For the outcome (measles – yes/no):
+* Set No as 0, and Yes as 1</p>
+<div id="model-script-3" class="section level3 hasAnchor" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> Model script<a href="extending-binary-regression.html#model-script-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Here is a <a href="files/Week_19/Week_19_Lab_Model_Script.Rmd">model script</a> that produces the answers to the above research questions. I use the word ‘model’ loosely, as you may have used different functions you’ve learned over the last two years (and that’s absolutely fine!). So don’t worry if you haven’t used the exact same functions as me. You should end up with the same results and interpretation at the end though.</p>
+</div>
+<div id="feedback-on-scripts-3" class="section level3 hasAnchor" number="6.3.2">
+<h3><span class="header-section-number">6.3.2</span> Feedback on scripts<a href="extending-binary-regression.html#feedback-on-scripts-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Feedback on R scripts submitted by students is available <a href="https://modules.lancaster.ac.uk/mod/folder/view.php?id=1785872">here</a>.</p>
+</div>
+</div>
+<div id="independent-learning-4" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Independent learning<a href="extending-binary-regression.html#independent-learning-4" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>This is optional, but recommended. The answers are found below.</p>
+<div id="activity-1-4" class="section level3 hasAnchor" number="6.4.1">
+<h3><span class="header-section-number">6.4.1</span> Activity 1<a href="extending-binary-regression.html#activity-1-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Interpreting odds ratios from multiple binary logistic regression</strong></p>
+<p>Imagine you are interested in examining factors that predict whether an individual has a dog (yes/no). The variables you are interested in are: has children (yes/no), working pattern (full-time, part-time, unemployed), and number of pets previously (continuous). You code dog into a numeric variable where 0 = No and 1 = Yes. You set “No” as the reference category for “has children” and “unemployed” as the reference category for working pattern. Below are the odds ratios and 95% confidence intervals around the odds ratio that you obtain.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+</th>
+<th style="text-align:center;">
+Odds ratio
+</th>
+<th style="text-align:center;">
+Lower confidence interval bound
+</th>
+<th style="text-align:center;">
+Upper confidence interval bound
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Has_childrenYes
+</td>
+<td style="text-align:center;">
+3.67
+</td>
+<td style="text-align:center;">
+2.14
+</td>
+<td style="text-align:center;">
+5.64
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Working_patternFull-time
+</td>
+<td style="text-align:center;">
+6.85
+</td>
+<td style="text-align:center;">
+1.34
+</td>
+<td style="text-align:center;">
+14.67
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Working_patternPart-time
+</td>
+<td style="text-align:center;">
+3.12
+</td>
+<td style="text-align:center;">
+0.67
+</td>
+<td style="text-align:center;">
+1.35
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Num_previous_pets
+</td>
+<td style="text-align:center;">
+0.45
+</td>
+<td style="text-align:center;">
+0.23
+</td>
+<td style="text-align:center;">
+0.67
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Can you interpert the odds ratios?</strong></p>
+<p><strong>Which rows would be significant if you looked at the p-values and why?</strong></p>
+</div>
+<div id="activity-2-4" class="section level3 hasAnchor" number="6.4.2">
+<h3><span class="header-section-number">6.4.2</span> Activity 2<a href="extending-binary-regression.html#activity-2-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Interpreting odds ratios from a proportional odds model</strong></p>
+<p>Imagine you are interested in examining factors that predict severity of a disease (mild, moderate or severe). The variables you are interested in are: pre-existing health condition (yes/no), smokes (yes/no), and number of units of alcohol consumed weekly (continuous). You code disease severity into an ordered factor (mild &lt; moderate &lt; severe). You set “No” as the reference category for “pre-existing health condition” and “smoking”. Below are the odds ratios and confidence intervals you obtain.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+</th>
+<th style="text-align:center;">
+Odds ratio
+</th>
+<th style="text-align:center;">
+Lower confidence interval bound
+</th>
+<th style="text-align:center;">
+Upper confidence interval bound
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Pre-existing_healthYes
+</td>
+<td style="text-align:center;">
+2.31
+</td>
+<td style="text-align:center;">
+1.45
+</td>
+<td style="text-align:center;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+SmokesYes
+</td>
+<td style="text-align:center;">
+1.45
+</td>
+<td style="text-align:center;">
+0.89
+</td>
+<td style="text-align:center;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Num_alcohol_units
+</td>
+<td style="text-align:center;">
+1.12
+</td>
+<td style="text-align:center;">
+1.02
+</td>
+<td style="text-align:center;">
+1.45
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Can you interpret the odds ratios?</strong></p>
+<p><strong>Which rows would be significant if you looked at the p-values and why?</strong></p>
+</div>
+<div id="activity-1-answers-4" class="section level3 hasAnchor" number="6.4.3">
+<h3><span class="header-section-number">6.4.3</span> Activity 1: Answers<a href="extending-binary-regression.html#activity-1-answers-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+</th>
+<th style="text-align:center;">
+Odds ratio
+</th>
+<th style="text-align:center;">
+Lower confidence interval bound
+</th>
+<th style="text-align:center;">
+Upper confidence interval bound
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Has_childrenYes
+</td>
+<td style="text-align:center;">
+3.67
+</td>
+<td style="text-align:center;">
+2.14
+</td>
+<td style="text-align:center;">
+5.64
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Working_patternFull-time
+</td>
+<td style="text-align:center;">
+6.85
+</td>
+<td style="text-align:center;">
+1.34
+</td>
+<td style="text-align:center;">
+14.67
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Working_patternPart-time
+</td>
+<td style="text-align:center;">
+3.12
+</td>
+<td style="text-align:center;">
+0.67
+</td>
+<td style="text-align:center;">
+1.35
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Num_previous_pets
+</td>
+<td style="text-align:center;">
+0.45
+</td>
+<td style="text-align:center;">
+0.23
+</td>
+<td style="text-align:center;">
+0.67
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Can you interpret the odds ratios?</strong></p>
+<p>You could interpret the odds ratios in two ways:</p>
+<p><strong>Way one:</strong></p>
+<p><span style="color:purple">Individuals who had children had higher odds of having a dog relative to individuals who did not have children (odds ratio = 3.67, 95% confidence interval = 2.14-5.64) when holding other variables constant</span></p>
+<p><span style="color:purple">Individuals who worked full time had had higher odds of having a dog relative to individuals who were unemployed (odds ratio = 6.85, 95% confidence interval = 1.34-14.67) when holding other variables constant</span></p>
+<p><span style="color:purple">Individuals who worked part-time had higher odds of having a dog relative to individuals who were unemployed (odds ratio = 3.12, 95% confidence interval = 0.67-1.35) when holding other variables constant</span></p>
+<p><span style="color:purple">A one unit increase in the number of previous pets was associated with lower odds of currently having a dog (odds ratio = 0.45, 95% confidence interval = 0.23-0.67) when holding other variables constant</span></p>
+<p><strong>Way two:</strong></p>
+<p><span style="color:purple">Individuals who had children had 3.67x higher odds of having a dog relative to individuals who did not have children (95% confidence interval = 2.14-5.64), when holding other variables constant</span></p>
+<p><span style="color:purple">Individuals who worked full time had had 6.85x higher odds of having a dog relative to individuals who were unemployed (95% confidence interval = 1.34-14.67), when holding other variables constant</span></p>
+<p><span style="color:purple">Individuals who worked part-time had 3.12x higher odds of having a dog relative to individuals who were unemployed (95% confidence interval = 0.67-1.35)</span></p>
+<p><span style="color:purple">A one unit increase in the number of previous pets was associated with a 0.45x higher odds (i.e. lower odds) of having a dog (odds ratio = 0.45, 95% confidence interval = 0.23-0.67), when holding other variables constant</span></p>
+<p><strong>Which rows would be significant if you looked at the p-values and why?</strong></p>
+<p><span style="color:purple">* Has_childrenYes</span></p>
+<p><span style="color:purple">* Working_patternFull-time</span></p>
+<p><span style="color:purple">* Num_previous_pets</span></p>
+<p><span style="color:purple">The 95% confidence interval around the odds ratio does not cross 1 for these comparisons (i.e. both the upper and the lower bound are higher than 1 OR both the upper and the lower bound are lower than 1). For Working_patternPart-time, the 95% confidence interval crosses 1 (i.e. the lower confidence interval bound is below 1 and the higher confidence interval bound is above 1). This means when we look at the output, the p-value for Working_patternPart-time will be above 0.05 (i.e. not significant).</span></p>
+</div>
+<div id="activity-2-answers-4" class="section level3 hasAnchor" number="6.4.4">
+<h3><span class="header-section-number">6.4.4</span> Activity 2: Answers<a href="extending-binary-regression.html#activity-2-answers-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+</th>
+<th style="text-align:center;">
+Odds ratio
+</th>
+<th style="text-align:center;">
+Lower confidence interval bound
+</th>
+<th style="text-align:center;">
+Upper confidence interval bound
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+Pre-existing_healthYes
+</td>
+<td style="text-align:center;">
+2.31
+</td>
+<td style="text-align:center;">
+1.45
+</td>
+<td style="text-align:center;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+SmokesYes
+</td>
+<td style="text-align:center;">
+1.45
+</td>
+<td style="text-align:center;">
+0.89
+</td>
+<td style="text-align:center;">
+4.56
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Num_alcohol_units
+</td>
+<td style="text-align:center;">
+1.12
+</td>
+<td style="text-align:center;">
+1.02
+</td>
+<td style="text-align:center;">
+1.45
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Can you interpret the odds ratios?</strong></p>
+<p>You can interpret the odds ratios in two ways:</p>
+<p><strong>Way one:</strong></p>
+<p><span style="color:purple">Individuals who had a pre-existing health condition had higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not have a pre-existing health condition (odds ratio = 2.31, 95% confidence interval = 1.45-4.56), when holding other variables constant</span></p>
+<p><span style="color:purple">Individuals who smoked had higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not smoke (odds ratio = 1.45, 95% confidence interval = 0.89-4.56) when holding other variables constant</span></p>
+<p><span style="color:purple">A one unit increase in the number of alcohol units consumed weekly increased the odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease), when holding the other variables constant (odds ratio = 1.12, 95% confidence interval = 1.02-1.45)</span></p>
+<p><strong>Way two:</strong></p>
+<p><span style="color:purple">Individuals who had a pre-existing health condition had 2.31x higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not have a pre-existing health condition (95% confidence interval = 1.45-4.56), when holding other variables constant</span></p>
+<p><span style="color:purple">Individuals who smoked had 1.45x higher odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) relative to individuals who did not smoke (95% confidence interval = 0.89-4.56) when holding other variables constant</span></p>
+<p><span style="color:purple">A one unit increase in the number of alcohol units consumed weekly increased the odds of having more severe disease (e.g. “severe” disease vs “mild” or “moderate” disease) by 1.12, when holding the other variables constant (95% confidence interval = 1.02-1.45)</span></p>
+<p><strong>Which rows would be significant if you looked at the p-values and why?</strong></p>
+<p><span style="color:purple">* Pre-existing_healthYes </span>
+<span style="color:purple">* Num_alcohol_units</span></p>
+<p><span style="color:purple">The 95% confidence interval around the odds ratio does not cross 1 for these comparisons (i.e. both the upper and the lower bound are higher than 1 OR both the upper and the lower bound are lower than 1). For SmokesYes, the 95% confidence interval crosses 1 (i.e. the lower confidence interval bound is below 1 and the higher confidence interval bound is above 1). This means when we look at the output, the p-value for SmokesYes will be above 0.05 (i.e. not significant).</span></p>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="binary-log-regression.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
